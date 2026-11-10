@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>exercise tracker for a shovel of junts</title>
+<style>
+:root{--bg:#f5f3eb;--card:#fffdf6;--ink:#1f2a21;--muted:#575d51;--line:#dedfd2;--green:#223b2c;--lime:#dce99f;--rust:#a44731;--shadow:0 2px 0 #1f2a2108;--r:18px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #788b28;outline-offset:3px}button[disabled]{opacity:.45;cursor:default}button,.button{border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);min-height:43px;padding:8px 13px;font-weight:650}button:hover:not(:disabled){background:#efefe4}button.primary{background:var(--green);border-color:var(--green);color:white}button.primary:hover{background:#365641}button.text{background:none;border-color:transparent}button.icon{padding:7px 10px;min-width:44px;font-size:19px}a{color:#34563c}h1,h2,h3,p{margin:0}h1,h2{font-family:Georgia,serif;line-height:1.06;font-weight:normal}h2{font-size:clamp(28px,4vw,38px)}h3{font-size:16px;line-height:1.3}small,.muted{color:var(--muted)}[hidden]{display:none!important}
+.header{border-bottom:1px solid var(--line);background:var(--card)}.wrap{width:min(1120px,calc(100% - 48px));margin:auto}.head-inner{display:flex;justify-content:space-between;align-items:center;gap:20px;min-height:74px}.brand{display:flex;align-items:center;gap:11px;font-size:14px;font-weight:780;letter-spacing:-.02em}.mark{width:37px;height:37px;border-radius:11px;background:var(--green);color:var(--lime);display:grid;place-items:center;flex:none}.mark svg{width:22px;height:22px}.nav{display:flex;gap:4px}.nav svg{display:none}.nav button{border-color:transparent;background:transparent;font-size:14px;white-space:nowrap}.nav button[aria-current="page"]{background:#e9eddb}
+main{padding:24px 0 38px}.hero{position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;background:var(--green);color:#fffdf6;border-radius:23px;padding:28px 33px;min-height:213px}.hero .label{color:var(--lime)}.label,.eyebrow{font-size:11px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}.hero h1{font-size:clamp(32px,5.3vw,58px);letter-spacing:-.05em;margin:7px 0 10px;max-width:650px}.hero p:last-child{color:#e0e7d9}.hero-copy{position:relative;z-index:1}.hero-art{position:absolute;right:0;bottom:0;width:380px;height:100%;pointer-events:none}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:25px 0 13px;flex-wrap:wrap}.bar h2{margin-top:3px}.date-tools,.actions,.inline{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.date-tools input{width:144px;text-align:center;min-height:43px}.date-tools .text{font-size:13px;padding:6px 8px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(3,minmax(0,1fr))}.metric{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 17px;min-height:124px}.metric:first-child{background:#e9eddb;border-color:#dce2ca}.metric-name{font-weight:750;color:#405044;font-size:13px}.number{font-size:clamp(25px,4.2vw,39px);line-height:1.15;letter-spacing:-.055em;font-weight:740;margin:4px 0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.number span{font-size:13px;letter-spacing:0;font-weight:600;color:var(--muted);margin-left:5px}.metric small{display:block;font-size:12px}.progress{margin-top:10px;background:#d6deca;border-radius:20px;height:5px;overflow:hidden}.progress span{display:block;height:100%;background:#496943;border-radius:20px}.progress.over span{background:var(--rust)}
+.panels{display:grid;grid-template-columns:1.14fr 1fr;gap:13px;margin-top:15px;align-items:start}.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 17px;box-shadow:var(--shadow);min-width:0}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-bottom:9px}.panel-head h3{font-size:18px;letter-spacing:-.025em}.panel-head button{white-space:nowrap}.empty{min-height:78px;display:flex;align-items:center;color:var(--muted);font-size:14px;border-top:1px solid var(--line);padding:13px 0}.entry{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}.entry-name{font-weight:680;overflow-wrap:anywhere}.entry-detail{font-size:12px;color:var(--muted);overflow-wrap:anywhere}.entry-kcal{font-size:13px;font-weight:700;white-space:nowrap}.entry .text{padding:4px 7px;min-height:37px;font-size:13px}.flag{color:#8a3826}
+.subpage{max-width:830px}.plan-list{display:grid;gap:9px;margin-top:11px}.plan-option{padding:12px;border:1px solid var(--line);border-radius:12px}.plan-option.fit{border-color:#a9ba83;background:#f1f4e6}.plan-option h3{margin-bottom:3px}.plan-option .actions{justify-content:space-between;margin-top:8px}.plan-option .estimate{font-size:15px;font-weight:740}.plan-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.plan-controls .field:last-child{grid-column:1/-1}.plan-note{font-size:13px;color:var(--muted);margin-top:10px}.section-title{margin:8px 0 16px}.section-title p{margin-top:6px}.stack{display:grid;gap:13px}.section-copy{color:var(--muted);margin:7px 0 13px;font-size:14px}.search-row{display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap}.search-row input[type=search]{flex:1;min-width:180px}.check{display:flex;align-items:center;gap:7px;font-size:13px}.check input{accent-color:var(--green);width:17px;height:17px}.filters{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0}.pill{min-height:36px;padding:5px 10px;border-radius:20px;font-size:13px}.pill[aria-pressed=true]{background:var(--green);color:white;border-color:var(--green)}.pill[aria-pressed=true]:hover{background:#365641}.status-line{font-size:13px;color:var(--muted);margin:7px 0}.food-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}.food-row .actions{justify-content:flex-end}.food-row button{min-height:37px;font-size:13px}.food-row .flag{display:block;font-size:12px}
+input:not([type=checkbox]),select,textarea{color:var(--ink);background:#fffefa;border:1px solid #cbd0c2;border-radius:8px;padding:9px 10px;max-width:100%;min-width:0}label.field{display:grid;gap:4px;font-size:13px;font-weight:690}label.field small{font-weight:400}textarea{resize:vertical}form .fields{display:grid;gap:11px;margin:13px 0}form .two{display:grid;grid-template-columns:1fr 1fr;gap:9px}.inline form{display:flex;gap:8px;flex-wrap:wrap}.inline input{flex:1}.notice{background:#f5edda;color:#654425;border-radius:9px;padding:9px 11px;font-size:13px;margin:9px 0;overflow-wrap:anywhere}.tagline{margin:14px 0 1px;font-size:13px;color:var(--muted)}.chart-card{margin-top:14px}.chart{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin:12px 0 0}.chart-day{display:grid;justify-items:center;gap:4px;font-size:12px;min-width:0}.plot{height:75px;width:100%;display:flex;justify-content:center;gap:3px;align-items:flex-end;border-bottom:1px solid var(--line)}.plot i{width:21%;max-width:15px;border-radius:3px 3px 0 0;background:#69834f}.plot i:last-child{background:#ae6a50}.chart-day.current{font-weight:800}.legend{display:flex;gap:13px;flex-wrap:wrap;color:var(--muted);font-size:12px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;background:#69834f}.dot.out{background:#ae6a50}.history-table{width:100%;border-collapse:collapse;text-align:left;font-size:13px;font-variant-numeric:tabular-nums}.history-table th,.history-table td{padding:8px 5px;border-top:1px solid var(--line)}.history-table th{font-weight:700}.history-table td button{font-size:12px;min-height:34px;padding:3px 6px}.footer{border-top:1px solid var(--line);padding:14px 0 25px;color:var(--muted);font-size:12px}
+dialog{border:1px solid var(--line);border-radius:var(--r);background:var(--card);color:var(--ink);padding:19px;width:min(500px,calc(100% - 24px));max-height:calc(100% - 24px);box-shadow:0 22px 100px #17281e33;overflow:auto}dialog::backdrop{background:#17281e80}.dialog-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.dialog-head h2{font-size:28px}.dialog-footer{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:14px}.danger{color:#8a3826}.toast{position:fixed;z-index:4;bottom:15px;left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100% - 28px);border-radius:9px;background:var(--green);color:white;padding:9px 13px;font-size:14px;box-shadow:0 3px 18px #1c291d33}
+@media(max-width:720px){
+  .wrap{width:calc(100% - 28px)}
+  .head-inner{min-height:54px;padding:5px 0}
+  .brand{font-size:13px}.mark{width:33px;height:33px}.mark svg{width:20px;height:20px}
+  .nav{position:fixed;bottom:0;left:0;right:0;z-index:3;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;background:var(--card);border-top:1px solid var(--line);padding:4px max(8px,env(safe-area-inset-right)) max(4px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}
+  .nav button{display:grid;justify-items:center;align-content:center;gap:2px;padding:3px 2px;min-height:49px;font-size:12px;line-height:1.3}
+  .nav svg{display:block;width:19px;height:19px}
+  .hero{padding:13px 15px;min-height:117px}.hero h1{font-size:30px;max-width:19ch;margin:4px 0 6px}.hero-art{width:167px;right:-26px;opacity:.58}.hero p:last-child{font-size:12px;max-width:31ch}
+  .panels{grid-template-columns:1fr}.bar{margin:15px 0 11px}main{padding-top:11px}
+  .metric{padding:9px 8px;min-height:105px}.grid{gap:6px}.metric-name{font-size:12px}.metric small{font-size:11px}
+  .number span{font-size:11px;margin-left:3px}.panel{padding:13px}.panel-head button,.entry .text,.food-row button{min-height:44px}
+  .date-tools{gap:5px;flex-wrap:nowrap}.date-tools input{width:135px}.date-tools .text{min-width:44px}.food-row .actions{gap:4px}.food-row button{padding:4px 7px}
+  input:not([type=checkbox]),select,textarea{font-size:16px}.footer{padding-bottom:calc(69px + env(safe-area-inset-bottom))}
+  .toast{bottom:calc(64px + env(safe-area-inset-bottom))}.plan-controls{grid-template-columns:1fr 1fr}.plan-controls .field:last-child{grid-column:auto}.plan-option button{min-height:44px}
+  dialog{max-height:calc(100dvh - 20px)}
+}
+@media(max-width:359px){.nav button{font-size:11px}.number span{display:block;margin-left:0}.hero h1{font-size:27px}.hero-art{opacity:.4}.hero .label{display:none}.date-tools input{width:120px}.date-tools .text{padding-inline:4px}}
+</style>
+</head>
+<body>
+<header class="header"><div class="wrap head-inner">
+<div class="brand"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M15 9l5-5m-2-2 4 4m-8 3 3 3-6 7-7 1 1-7 6-6z"/></svg></span> exercise tracker for a shovel of junts</div>
+<nav class="nav" aria-label="App views"><button type="button" data-view="journal" aria-current="page"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v15H4z M4 9h16 M8 3v4 M16 3v4 M8 13h2m4 0h2m-8 3h2"/></svg>Journal</button><button type="button" data-view="foods"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h7v15H4z M13 5h3l4 14-3 1z M7 9h1m-1 4h1"/></svg>Food library</button><button type="button" data-view="exercise"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 10-12h-7l1-8z"/></svg>Exercise</button><button type="button" data-view="history"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 1 3 6.7 M3 6v6h6 M12 8v4l3 2"/></svg>History</button><button type="button" data-view="settings"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16 M4 12h16 M4 18h16 M8 4v4 M15 10v4 M10 16v4"/></svg>Settings</button></nav>
+</div></header>
+<main class="wrap">
+<p class="notice" id="storage-warning" hidden>Browser storage is unavailable. Changes will last until you close or reload the app. Use Settings to export a backup.</p>
+<section id="journal">
+<div class="hero">
+<div class="hero-copy"><p class="label">Personal food &amp; movement journal</p><h1>exercise tracker for a shovel of junts</h1><p>Log food, track movement and see where the numbers land.</p></div>
+<svg class="hero-art" aria-hidden="true" viewBox="0 0 380 213" preserveAspectRatio="xMaxYMax meet"><defs><pattern id="field-dots" width="13" height="13" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="1" fill="#dce99f" opacity=".3"/></pattern></defs><circle cx="278" cy="114" r="80" fill="#314d38"/><circle cx="278" cy="114" r="94" fill="none" stroke="#9caf73" opacity=".45" stroke-dasharray="2 6"/><path d="M53 213C168 127 243 183 380 137v76z" fill="#426043"/><path d="M94 213c117-56 210-35 286-58v58z" fill="#59724a"/><path d="M94 213c117-56 210-35 286-58v58z" fill="url(#field-dots)"/><g transform="rotate(29 276 106)"><rect x="270" y="59" width="12" height="84" rx="6" fill="#dce99f"/><path d="M259 37h34v9c0 10-7 16-17 16s-17-6-17-16z" fill="none" stroke="#dce99f" stroke-width="7" stroke-linejoin="round"/><path d="M255 133h42v27q0 16-21 26-21-10-21-26z" fill="#dce99f"/><path d="M276 141v28" stroke="#a0ad6a" stroke-width="3" stroke-linecap="round"/></g><path d="M335 60h17m-8-8v17M210 91h10m-5-5v10" stroke="#dce99f" opacity=".8" stroke-linecap="round"/></svg>
+</div>
+<div class="bar"><div><p class="eyebrow">Daily journal</p><h2 id="day-heading">Today</h2></div><div class="date-tools"><button class="icon" id="prev-day" aria-label="Previous day">‹</button><input id="journal-date" type="date" aria-label="Journal date"><button class="icon" id="next-day" aria-label="Next day">›</button><button class="text" id="today">Today</button></div></div>
+<div class="grid">
+<div class="metric"><p class="metric-name">Calories in</p><p class="number" id="in-value"></p><small id="in-note"></small><div class="progress" id="target-progress" hidden><span></span></div></div>
+<div class="metric"><p class="metric-name">Exercise out</p><p class="number" id="out-value"></p><small id="out-note"></small></div>
+<div class="metric"><p class="metric-name" id="net-title">Net logged</p><p class="number" id="net-value"></p><small id="net-note"></small></div>
+</div>
+<div class="panels">
+<div class="panel"><div class="panel-head"><h3>Food</h3><div class="actions"><button type="button" data-action="browse">Browse</button><button type="button" class="primary" data-action="add-food">+ Food</button></div></div><div id="food-log"></div></div>
+<div class="panel"><div class="panel-head"><h3>Exercise</h3><div class="actions"><button type="button" data-action="plan">Plan</button><button type="button" class="primary" data-action="add-exercise">+ Exercise</button></div></div><div id="exercise-log"></div></div>
+</div>
+<div class="panel chart-card"><div class="panel-head"><h3>Last 7 days</h3><button class="text" type="button" data-action="history">View history →</button></div><div class="legend"><span><i class="dot"></i>Food</span><span><i class="dot out"></i>Exercise</span></div><div class="chart" id="week-chart"></div></div>
+</section>
+<section id="foods" class="subpage" hidden>
+<div class="section-title"><h2>Food library</h2><p class="muted">Search starter foods or save the foods you eat regularly.</p></div>
+<div class="stack">
+<div class="panel"><div class="panel-head"><h3>Food exclusions</h3><button type="button" data-action="settings">Edit exclusions</button></div><div id="active-filters" class="status-line"></div><p class="section-copy">Matches and saved foods without ingredient notes are hidden by default when exclusions are active. Check labels and ingredient lists for the actual food.</p></div>
+<div class="panel"><div class="panel-head"><h3>Food picker</h3><button type="button" class="primary" data-action="add-library">+ Save food</button></div><p class="status-line" id="add-date"></p><div class="search-row"><input type="search" id="food-search" placeholder="Search food or ingredients" aria-label="Search foods"><label class="check"><input type="checkbox" id="show-filtered"> Show matches and unreviewed</label></div><p class="status-line" id="search-count" role="status"></p><div id="catalogue"></div><p class="tagline">Starter portions are 100 g with approximate energy values. Use the packaging for specific products. <a href="https://fdc.nal.usda.gov/download-datasets/" target="_blank" rel="noopener noreferrer">USDA food composition data</a></p></div>
+</div>
+</section>
+<section id="exercise" class="subpage" hidden>
+<div class="section-title"><h2>Exercise planner</h2><p class="muted">Compare activities for a burn goal or see what fits the time you have.</p></div>
+<div class="stack">
+<div class="panel">
+<h3>Plan a session</h3>
+<form id="exercise-plan">
+<div class="fields plan-controls">
+<label class="field">Weight (kg)<input type="number" id="plan-weight" min="25" max="400" step="0.1" inputmode="decimal" placeholder="e.g. 75" required></label>
+<label class="field">Active calorie goal<input type="number" id="plan-goal" min="1" max="3000" step="1" inputmode="numeric" placeholder="e.g. 150"></label>
+<label class="field">Time available (min)<input type="number" id="plan-time" min="1" max="300" step="1" inputmode="numeric" placeholder="Optional"></label>
+<label class="field">Show activities<select id="plan-filter"><option value="all">All activities</option><option value="low">Lower impact</option><option value="none">No equipment</option></select></label>
+</div>
+<button class="primary" type="submit">Compare activities</button>
+</form>
+<p class="plan-note">Enter a goal, a time, or both. Your last plan stays in this browser.</p>
+</div>
+<div class="panel" id="plan-results-panel" hidden>
+<div class="panel-head"><h3>Activity options</h3></div>
+<p class="status-line" id="plan-summary" role="status"></p>
+<div class="plan-list" id="plan-results"></div>
+</div>
+<div class="panel"><h3>How estimates work</h3><p class="plan-note">Active calories are the estimated energy above resting burn. This uses activity averages for adults aged 19–59. Your actual burn can vary with effort, terrain and individual physiology. Choose an activity and pace that suit you. <a href="https://pacompendium.com/adult-compendium/" target="_blank" rel="noopener noreferrer">2024 Adult Compendium</a></p></div>
+</div>
+</section>
+<section id="history" class="subpage" hidden>
+<div class="section-title"><h2>Journal history</h2><p class="muted">Open any logged day to review or edit it.</p></div>
+<div class="panel" id="history-list"></div>
+</section>
+<section id="settings" class="subpage" hidden>
+<div class="section-title"><h2>Settings</h2><p class="muted">Set your calorie plan and the foods you want to filter out.</p></div>
+<div class="stack">
+<div class="panel"><h3>Calorie plan</h3><p class="section-copy">Both values are optional and apply across your journal. Exercise stays separate from your food target.</p>
+<form id="targets"><div class="fields"><label class="field">Daily food target (kcal)<input id="food-target" type="number" min="1" max="30000" step="1" placeholder="Optional"></label><label class="field">Daily baseline burn, excluding separately logged exercise (kcal)<input id="baseline" type="number" min="1" max="30000" step="1" placeholder="Optional"><small>With a baseline, the journal shows food minus baseline and logged exercise. Leave it blank to see food minus logged exercise only.</small></label></div><button class="primary">Save calorie plan</button></form>
+</div>
+<div class="panel"><h3>Food exclusions</h3><p class="section-copy">Choose categories or add your own ingredient terms. The picker checks its known tags, food names and ingredient notes. It can miss ingredients and cross-contact. <a href="https://allergyfacts.org.au/living-with-allergies/daily-management/reading-labels-ingredients/" target="_blank" rel="noopener noreferrer">Reading food labels</a></p>
+<div class="filters" id="preset-filters" aria-label="Preset exclusions"></div><div class="filters" id="custom-filters" aria-label="Custom exclusions"></div>
+<form id="custom-filter" class="inline"><input id="filter-name" maxlength="60" required placeholder="e.g. onion or garlic" aria-label="Ingredient or phrase to exclude"><button type="submit">Add exclusion</button></form><p class="tagline">Add one ingredient or phrase at a time. Changes save immediately.</p></div>
+<div class="panel"><h3>Backup and restore</h3><p class="section-copy">Your entries and settings stay in this browser. Export a JSON backup to move them to another browser or keep a copy.</p><div class="actions"><button type="button" id="export">Export backup</button><button type="button" id="import">Restore backup</button><input type="file" accept=".json,application/json" id="backup-file" hidden></div></div>
+</div>
+</section>
+</main>
+<footer class="footer"><div class="wrap">Shovel of Junts · Personal journal · Data stays in this browser</div></footer>
+<dialog id="editor" aria-labelledby="editor-title"><form id="editor-form"><div class="dialog-head"><h2 id="editor-title"></h2><button class="icon text" type="button" data-action="close-editor" aria-label="Close">×</button></div><div id="editor-body"></div><div class="dialog-footer"><button type="button" class="danger text" id="remove-entry" hidden>Delete</button><div class="actions" style="margin-left:auto"><button type="button" data-action="close-editor">Cancel</button><button class="primary" id="save-entry">Save</button></div></div></form></dialog>
+<datalist id="exercise-types"><option>Walking</option><option>Running</option><option>Cycling</option><option>Swimming</option><option>Strength training</option><option>Shovelling</option><option>Gardening</option></datalist>
+<div id="toast" class="toast" role="status" hidden></div>
+<script>
+'use strict';
+
+const byId = id => document.getElementById(id);
+const storageKey = 'shovel-of-junts-journal-v1';
+const meals = ['Breakfast','Lunch','Dinner','Snack','Other'];
+const presets = {
+  'Lactose': 'lactose, milk, milk powder, yoghurt, yogurt, cream, condensed milk, evaporated milk, whey, soft cheese',
+  'Dairy': 'dairy, milk, milk powder, yoghurt, yogurt, butter, ghee, cream, cheese, whey, casein, caseinate, buttermilk',
+  'Gluten': 'gluten, wheat, barley, rye, spelt, malt, semolina, couscous, oats, bulgur, seitan',
+  'Egg': 'egg, eggs, egg white, egg yolk, albumen, mayonnaise',
+  'Soy': 'soy, soya, soybean, soybeans, tofu, tempeh, edamame, miso, tamari, soy sauce',
+  'Peanut': 'peanut, peanuts, groundnut, groundnuts',
+  'Tree nuts': 'tree nut, tree nuts, almond, almonds, cashew, cashews, walnut, walnuts, hazelnut, hazelnuts, pistachio, pistachios, pecan, pecans, macadamia, macadamias, brazil nut, brazil nuts, pine nut, pine nuts',
+  'Sesame': 'sesame, tahini, benne',
+  'Fish': 'fish, salmon, tuna, cod, barramundi, trout, anchovy, anchovies, sardine, sardines, mackerel',
+  'Shellfish': 'shellfish, prawn, prawns, shrimp, crab, lobster, oyster, oysters, mussel, mussels, scallop, scallops, squid',
+  'Onion': 'onion, onions, shallot, shallots, onion powder',
+  'Garlic': 'garlic, garlic powder'
+};
+const starterFoods = [
+  ['Apple',52,'raw apple'], ['Banana',89,'raw banana'], ['Orange',47,'raw orange'],
+  ['Strawberries',32,'raw strawberries'], ['Avocado',160,'raw avocado'],
+  ['Carrot',41,'raw carrot'], ['Broccoli',34,'raw broccoli'],
+  ['Sweet potato',90,'baked sweet potato'], ['White rice',130,'cooked white rice'],
+  ['Brown rice',123,'cooked brown rice'], ['Quinoa',120,'cooked quinoa'],
+  ['Chickpeas',164,'cooked chickpeas'], ['Lentils',116,'cooked lentils'],
+  ['Chicken breast',165,'roasted skinless chicken breast'], ['Salmon',206,'cooked Atlantic salmon',['Fish']],
+  ['Prawns',99,'plain cooked prawns',['Shellfish']], ['Boiled egg',155,'whole egg',['Egg']],
+  ['Firm tofu',144,'soybeans, water, setting agent',['Soy']],
+  ['Plain whole milk yoghurt',61,'milk, live cultures',['Dairy','Lactose']],
+  ['Whole milk',61,'whole cow milk',['Dairy','Lactose']],
+  ['White bread',266,'typical wheat flour, water, yeast, salt',['Gluten']],
+  ['Almonds',579,'raw almonds',['Tree nuts']], ['Peanuts',567,'raw peanuts',['Peanut']],
+  ['Tahini',595,'sesame seeds',['Sesame']], ['Olive oil',884,'olive oil'],
+  ['Onion',40,'raw onion',['Onion']], ['Garlic',149,'raw garlic',['Garlic']]
+].map(([name, kcal, ingredients, tags = []], index) => ({
+  id:'starter-' + index, name, kcal, ingredients, tags, unit:'g', base:100
+}));
+
+const activities = [
+  {name:'Moderate walk', met:3.8, low:true, equipment:false, details:'Flat ground, about 4.5–5.5 km/h.'},
+  {name:'Brisk walk', met:4.8, low:true, equipment:false, details:'Flat ground, about 5.6–6.3 km/h.'},
+  {name:'Stationary bike', met:5, low:true, equipment:true, details:'Light to moderate effort at about 60 watts.'},
+  {name:'Leisure cycling', met:4, low:true, equipment:true, details:'Easy ride at under 16 km/h.'},
+  {name:'Water walking', met:4.8, low:true, equipment:true, details:'Moderate effort in a pool.'},
+  {name:'Low-impact dance', met:4.8, low:true, equipment:false, details:'Moderate effort, without jumps.'},
+  {name:'Strength training', met:3.5, low:false, equipment:true, details:'A mix of resistance exercises at varied loads.'},
+  {name:'Garden digging', met:3.5, low:false, equipment:true, details:'Light to moderate digging or shovelling.'},
+  {name:'Jogging', met:7.5, low:false, equipment:false, details:'Jog at your usual steady pace.'}
+];
+const planFilters = ['all','low','none'];
+const blank = () => ({version:1, settings:{target:null, baseline:null, presets:[], custom:[]}, foods:[], entries:[]});
+const isoDate = date => [date.getFullYear(), String(date.getMonth()+1).padStart(2,'0'), String(date.getDate()).padStart(2,'0')].join('-');
+const today = () => isoDate(new Date());
+const parseDate = value => new Date(value + 'T12:00:00');
+const dateLabel = value => parseDate(value).toLocaleDateString('en-AU',{weekday:'short', day:'numeric', month:'short', year:'numeric'});
+function offsetDate(value, days){
+  const date = parseDate(value);
+  date.setDate(date.getDate() + days);
+  return isoDate(date);
+}
+const amount = new Intl.NumberFormat('en-AU',{maximumFractionDigits:1});
+const fmt = value => amount.format(value);
+const rounded = value => Math.round(value * 10) / 10;
+const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const normalize = text => String(text).toLowerCase().normalize('NFKD').replace(/\p{M}/gu,'').replace(/[^\p{L}\p{N}]+/gu,' ').trim();
+const contains = (text, term) => (' ' + text + ' ').includes(' ' + term + ' ');
+const idFor = () => globalThis.crypto?.randomUUID?.() ?? Date.now().toString(36) + '-' + Math.random().toString(36).slice(2);
+
+function validBackup(data){
+  const text = (value, max, required=false) => typeof value === 'string' && value.length <= max && (!required || !!value.trim());
+  const number = (value,min,max) => Number.isFinite(value) && value >= min && value <= max;
+  const optionalTarget = value => value === null || number(value,1,30000) && Number.isInteger(value);
+  const list = (value, rule) => Array.isArray(value) && value.every(rule);
+  const knownTags = value => list(value, tag => Object.hasOwn(presets,tag));
+  const idList = items => new Set(items.map(item => item.id)).size === items.length;
+  const validDate = value => typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value) && isoDate(parseDate(value)) === value;
+  const baseItem = item => item && text(item.id,100,true) && text(item.name,120,true) && number(item.kcal,0,30000);
+  const settings = data?.settings;
+  return data?.version === 1 && settings && optionalTarget(settings.target) && optionalTarget(settings.baseline)
+    && knownTags(settings.presets) && list(settings.custom, term => text(term,60,true) && !!normalize(term))
+    && (settings.plan === undefined || settings.plan && number(settings.plan.weight,25,400)
+      && (settings.plan.goal === null || number(settings.plan.goal,1,3000) && Number.isInteger(settings.plan.goal))
+      && (settings.plan.time === null || number(settings.plan.time,1,300) && Number.isInteger(settings.plan.time))
+      && (settings.plan.goal !== null || settings.plan.time !== null) && planFilters.includes(settings.plan.filter))
+    && list(data.foods, item => baseItem(item) && !item.id.startsWith('starter-') && text(item.ingredients,600)) && idList(data.foods)
+    && list(data.entries, item => baseItem(item) && validDate(item.date) && (
+      item.type === 'food' && meals.includes(item.meal) && text(item.ingredients,600) && text(item.portion,80) && knownTags(item.tags)
+      || item.type === 'exercise' && (item.minutes === null || number(item.minutes,1,1440) && Number.isInteger(item.minutes))
+        && (item.estimated === undefined || typeof item.estimated === 'boolean')
+    )) && idList(data.entries);
+}
+let state = blank();
+let selected = today();
+let view = 'journal';
+let editorContext;
+let toastTimer;
+try {
+  const saved = localStorage.getItem(storageKey);
+  if(saved){
+    const parsed = JSON.parse(saved);
+    if(!validBackup(parsed)) throw new Error('Invalid journal');
+    state = parsed;
+  }
+} catch {
+  byId('storage-warning').hidden = false;
+}
+function persist(){
+  try {
+    localStorage.setItem(storageKey,JSON.stringify(state));
+    byId('storage-warning').hidden = true;
+  } catch {
+    byId('storage-warning').hidden = false;
+  }
+}
+function toast(message){
+  const box = byId('toast');
+  box.textContent = message;
+  box.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { box.hidden = true; },3500);
+}
+function totals(entries){
+  return entries.reduce((total, entry) => {
+    if(entry.type === 'food') total.food += entry.kcal;
+    else {
+      total.exercise += entry.kcal;
+      total.minutes += entry.minutes ?? 0;
+    }
+    return total;
+  },{food:0, exercise:0, minutes:0});
+}
+function daysLogged(){
+  const days = new Map();
+  for(const entry of state.entries){
+    if(!days.has(entry.date)) days.set(entry.date,[]);
+    days.get(entry.date).push(entry);
+  }
+  return days;
+}
+const getEntries = () => state.entries.filter(entry => entry.date === selected);
+function filterStatus(food){
+  const source = normalize(food.name + ' ' + food.ingredients);
+  const tags = food.tags ?? [];
+  const matches = state.settings.presets.filter(preset => tags.includes(preset)
+    || presets[preset].split(', ').some(term => contains(source,normalize(term))));
+  matches.push(...state.settings.custom.filter(term => contains(source,normalize(term))));
+  const unknown = !food.ingredients.trim() && !!(state.settings.presets.length || state.settings.custom.length);
+  return {matches, unknown};
+}
+function warning(status){
+  if(status.matches.length) return 'Matches your exclusions · ' + status.matches.join(', ');
+  if(status.unknown) return 'Needs review · ingredient notes missing';
+  return '';
+}
+function go(target){
+  view = target;
+  for(const key of ['journal','foods','exercise','history','settings']) byId(key).hidden = key !== target;
+  for(const tab of document.querySelectorAll('[data-view]')){
+    if(tab.dataset.view === target) tab.setAttribute('aria-current','page');
+    else tab.removeAttribute('aria-current');
+  }
+  render();
+  window.scrollTo({top:0});
+}
+function render(){
+  if(view === 'journal') renderJournal();
+  if(view === 'foods') renderFoods();
+  if(view === 'exercise') renderPlan();
+  if(view === 'history') renderHistory();
+  if(view === 'settings') renderSettings();
+}
+function renderJournal(){
+  const date = today();
+  byId('journal-date').value = selected;
+  byId('day-heading').textContent = selected === date ? 'Today' : dateLabel(selected);
+  byId('today').disabled = selected === date;
+  const entries = getEntries();
+  const {food,exercise,minutes} = totals(entries);
+  const {target,baseline} = state.settings;
+  byId('in-value').innerHTML = fmt(food) + '<span>kcal</span>';
+  byId('out-value').innerHTML = fmt(exercise) + '<span>kcal</span>';
+  byId('net-value').innerHTML = (entries.length ? fmt(rounded(food - exercise - (baseline ?? 0))) + '<span>kcal</span>' : '—');
+  const difference = rounded((target ?? 0) - food);
+  byId('in-note').textContent = target === null ? 'Set a target in Settings' : fmt(Math.abs(difference)) + (difference < 0 ? ' over target' : ' left of ' + fmt(target));
+  byId('out-note').textContent = minutes ? fmt(minutes) + ' min logged' : 'Active calories logged';
+  byId('net-title').textContent = baseline === null ? 'Net logged' : 'Daily balance';
+  byId('net-note').textContent = baseline === null ? 'Food minus exercise' : 'Food minus ' + fmt(baseline) + ' baseline and exercise';
+  const progress = byId('target-progress');
+  progress.hidden = target === null;
+  progress.classList.toggle('over', food > target);
+  progress.firstElementChild.style.width = target === null ? '0%' : Math.min(food / target * 100,100) + '%';
+  renderLog('food',entries);
+  renderLog('exercise',entries);
+  renderChart();
+}
+function renderLog(type, entries){
+  const rows = entries.filter(entry => entry.type === type);
+  if(type === 'food') rows.sort((a,b) => meals.indexOf(a.meal) - meals.indexOf(b.meal));
+  byId(type + '-log').innerHTML = rows.length ? rows.map(entry => {
+    const detail = type === 'food' ? [entry.meal,entry.portion].filter(Boolean).join(' · ') : [entry.minutes === null ? '' : fmt(entry.minutes) + ' min', entry.estimated ? 'Estimated burn' : ''].filter(Boolean).join(' · ');
+    const flag = type === 'food' ? warning(filterStatus(entry)) : '';
+    return '<div class="entry"><div><div class="entry-name">' + esc(entry.name) + '</div>'
+      + (detail ? '<div class="entry-detail">' + esc(detail) + '</div>' : '')
+      + (flag ? '<div class="entry-detail flag">' + esc(flag) + '</div>' : '')
+      + '</div><div class="entry-kcal">' + fmt(entry.kcal) + ' kcal</div><button class="text" type="button" data-action="edit-entry" data-id="' + esc(entry.id) + '" aria-label="Edit ' + esc(entry.name) + '">Edit</button></div>';
+  }).join('') : '<div class="empty">No ' + type + ' logged for this day.</div>';
+}
+function renderChart(){
+  const days = daysLogged();
+  const span = Array.from({length:7},(_,index) => {
+    const date = offsetDate(selected,index-6);
+    return {date,...totals(days.get(date) ?? [])};
+  });
+  const max = Math.max(1,...span.flatMap(day => [day.food,day.exercise]));
+  byId('week-chart').innerHTML = span.map(day => {
+    const label = dateLabel(day.date) + ' · ' + fmt(day.food) + ' kcal food · ' + fmt(day.exercise) + ' kcal exercise';
+    return '<div class="chart-day' + (day.date === selected ? ' current' : '') + '" title="' + esc(label) + '">'
+      + '<div class="plot" role="img" aria-label="' + esc(label) + '"><i style="height:' + (day.food/max*100) + '%"></i><i style="height:' + (day.exercise/max*100) + '%"></i></div>'
+      + '<span aria-hidden="true">' + esc(parseDate(day.date).toLocaleDateString('en-AU',{weekday:'short'})) + '</span></div>';
+  }).join('');
+}
+function allFoods(){
+  return [...state.foods.map(food => ({...food,base:1,unit:'serving',tags:[]})),...starterFoods];
+}
+function renderFoods(){
+  const filters = [...state.settings.presets,...state.settings.custom];
+  byId('active-filters').textContent = filters.length ? filters.join(' · ') : 'No exclusions selected.';
+  byId('add-date').textContent = 'Adding to ' + dateLabel(selected);
+  const query = normalize(byId('food-search').value);
+  const show = byId('show-filtered').checked;
+  let hidden = 0;
+  const rows = [];
+  for(const food of allFoods()){
+    if(query && !query.split(' ').every(term => normalize(food.name + ' ' + food.ingredients).includes(term))) continue;
+    const flag = warning(filterStatus(food));
+    if(flag && !show){
+      hidden++;
+      continue;
+    }
+    const edit = food.unit === 'serving' ? '<button type="button" class="text" data-action="edit-library" data-id="' + esc(food.id) + '" aria-label="Edit saved food ' + esc(food.name) + '">Edit</button>' : '';
+    rows.push('<div class="food-row"><div><div class="entry-name">' + esc(food.name) + '</div>'
+      + '<div class="entry-detail">' + fmt(food.kcal) + ' kcal per ' + (food.base === 100 ? '100 g' : 'serving')
+      + (food.ingredients ? ' · ' + esc(food.ingredients) : '') + '</div>'
+      + (flag ? '<div class="flag">' + esc(flag) + '</div>' : '')
+      + '</div><div class="actions">' + edit + '<button type="button" data-action="pick-food" data-id="' + esc(food.id) + '" aria-label="Add ' + esc(food.name) + '">Add</button></div></div>');
+  }
+  byId('search-count').textContent = rows.length + (rows.length === 1 ? ' food' : ' foods') + (hidden ? ' · ' + hidden + ' hidden by exclusions' : '');
+  byId('catalogue').innerHTML = rows.join('') || '<div class="empty">No foods match this view.</div>';
+}
+function activeCaloriesPerMinute(activity,weight){
+  return (activity.met - 1) * 3.5 * weight / 200;
+}
+function renderPlan(){
+  const plan = state.settings.plan;
+  byId('plan-weight').value = plan?.weight ?? '';
+  byId('plan-goal').value = plan?.goal ?? '';
+  byId('plan-time').value = plan?.time ?? '';
+  byId('plan-filter').value = plan?.filter ?? 'all';
+  byId('plan-results-panel').hidden = !plan;
+  if(!plan) return;
+
+  const {weight,goal,time,filter} = plan;
+  const options = activities
+    .map((activity,index) => {
+      const rate = activeCaloriesPerMinute(activity,weight);
+      return {activity,index,minutes:goal === null ? null : Math.ceil((goal - 0.5) / rate),burn:time === null ? null : Math.round(time*rate)};
+    })
+    .filter(({activity}) => filter === 'all' || (filter === 'low' ? activity.low : !activity.equipment));
+  const compareFit = goal !== null && time !== null;
+  const fits = option => compareFit && option.minutes <= time;
+  options.sort((a,b) => Number(fits(b)) - Number(fits(a)));
+  const count = options.filter(fits).length;
+  const summary = compareFit
+    ? (count ? count + (count === 1 ? ' option fits ' : ' options fit ') + 'your ' + time + '-minute window.' : 'These activities would take longer than ' + time + ' minutes to reach this goal.')
+    : goal === null ? 'Estimated active calories in ' + time + ' min.' : 'Estimated time to burn ' + fmt(goal) + ' active kcal.';
+  byId('plan-summary').textContent = summary;
+  byId('plan-results').innerHTML = options.map(option => {
+    const {activity,index,minutes,burn} = option;
+    const toGoal = minutes === null ? '' : 'About ' + fmt(minutes) + ' min for ' + fmt(goal) + ' kcal';
+    const inTime = burn === null ? '' : 'About ' + fmt(burn) + ' kcal in ' + time + ' min';
+    const status = fits(option) ? '<div class="entry-detail">Fits your time</div>' : '';
+    return '<article class="plan-option' + (fits(option) ? ' fit' : '') + '"><h3>' + esc(activity.name) + '</h3>'
+      + '<p class="entry-detail">' + esc(activity.details) + '</p><div class="actions"><div>'
+      + '<p class="estimate">' + (toGoal || inTime) + '</p>'
+      + (toGoal && inTime ? '<p class="entry-detail">' + inTime + '</p>' : '') + status
+      + '</div><button type="button" data-action="log-plan" data-id="' + index + '" aria-label="Log ' + esc(activity.name) + '">Log activity</button></div></article>';
+  }).join('');
+}
+function renderHistory(){
+  const days = daysLogged();
+  const rows = [...days.keys()].sort().reverse().map(date => {
+    const {food,exercise} = totals(days.get(date));
+    return '<tr><td>' + esc(dateLabel(date)) + '</td><td>' + fmt(food) + '</td><td>' + fmt(exercise) + '</td><td><button type="button" data-action="open-day" data-id="' + esc(date) + '" aria-label="Open ' + esc(dateLabel(date)) + '">Open</button></td></tr>';
+  });
+  byId('history-list').innerHTML = rows.length
+    ? '<table class="history-table"><thead><tr><th scope="col">Date</th><th scope="col">Food kcal</th><th scope="col">Exercise kcal</th><th scope="col"><span hidden>Open journal</span></th></tr></thead><tbody>' + rows.join('') + '</tbody></table>'
+    : '<p class="empty">Your logged days will appear here.</p>';
+}
+function renderSettings(){
+  byId('food-target').value = state.settings.target ?? '';
+  byId('baseline').value = state.settings.baseline ?? '';
+  renderFilters();
+}
+function renderFilters(){
+  byId('preset-filters').innerHTML = Object.keys(presets).map(preset => '<button class="pill" type="button" data-action="toggle-filter" data-id="' + esc(preset) + '" aria-pressed="' + state.settings.presets.includes(preset) + '">' + esc(preset) + '</button>').join('');
+  byId('custom-filters').innerHTML = state.settings.custom.map((term,index) => '<button class="pill" type="button" data-action="remove-filter" data-id="' + index + '" aria-label="Remove exclusion ' + esc(term) + '">' + esc(term) + ' ×</button>').join('');
+}
+const editor = byId('editor');
+const numberField = (id,label,value,min,max,step,required=false,hint='') =>
+  '<label class="field">' + label + '<input id="' + id + '" type="number" inputmode="' + (step === '1' ? 'numeric' : 'decimal') + '" min="' + min + '" max="' + max + '" step="' + step + '" value="' + esc(value) + '"' + (required ? ' required' : '') + '>' + (hint ? '<small>' + hint + '</small>' : '') + '</label>';
+const nameField = (label,value,exercise=false) =>
+  '<label class="field">' + label + '<input id="entry-name" maxlength="120" required value="' + esc(value) + '"' + (exercise ? ' list="exercise-types"' : '') + '></label>';
+const ingredientsField = value => '<label class="field">Ingredients (optional)<textarea id="ingredients" rows="2" maxlength="600" placeholder="From the label or your recipe">' + esc(value) + '</textarea></label>';
+const mealField = value => '<label class="field">Meal<select id="meal">' + meals.map(meal => '<option' + (meal === value ? ' selected' : '') + '>' + meal + '</option>').join('') + '</select></label>';
+function openEditor(type,item,plan){
+  editorContext = {type,item,date:selected,plan};
+  const editing = !!item && type !== 'pick';
+  byId('remove-entry').hidden = !editing;
+  const value = item ?? (plan ? {name:plan.activity.name} : {});
+  let fields;
+  if(type === 'exercise'){
+    byId('editor-title').textContent = editing ? 'Edit exercise' : 'Log exercise';
+    fields = nameField('Activity',value.name,true) + '<div class="two">'
+      + numberField('minutes',plan ? 'Actual minutes' : 'Minutes (optional)',value.minutes,1,1440,'1',!!plan)
+      + numberField('kcal','Active calories (kcal)',value.kcal,0,30000,'0.1',true) + '</div>'
+      + '<p class="status-line">' + (plan ? 'Enter the time you actually exercised to estimate the burn. You can replace it with your own active calorie reading.' : 'Use active calories from your watch or exercise equipment, or enter your own estimate.') + '</p>';
+  } else if(type === 'library'){
+    byId('editor-title').textContent = editing ? 'Edit saved food' : 'Save a food';
+    fields = nameField('Food name',value.name) + numberField('kcal','Calories per serving (kcal)',value.kcal,0,30000,'0.1',true)
+      + ingredientsField(value.ingredients);
+  } else if(type === 'pick'){
+    byId('editor-title').textContent = 'Log ' + value.name;
+    const detail = fmt(value.kcal) + ' kcal per ' + (value.base === 100 ? '100 g' : 'serving');
+    const flag = warning(filterStatus(value));
+    fields = '<p class="status-line">' + esc(detail) + '</p>'
+      + (flag ? '<p class="notice">' + esc(flag) + '</p>' : '')
+      + mealField('Other')
+      + numberField('quantity',value.unit === 'g' ? 'Amount (g)' : 'Servings',value.base,0.1,10000,'0.1',true)
+      + '<p id="portion-result" class="status-line" role="status"></p>';
+  } else {
+    byId('editor-title').textContent = editing ? 'Edit food' : 'Log food';
+    fields = nameField('Food name',value.name) + '<div class="two">' + mealField(value.meal ?? 'Other')
+      + numberField('kcal','Calories eaten (kcal)',value.kcal,0,30000,'0.1',true) + '</div>'
+      + '<label class="field">Portion (optional)<input id="portion" maxlength="80" value="' + esc(value.portion) + '" placeholder="e.g. 1 bowl"></label>'
+      + ingredientsField(value.ingredients);
+  }
+  const subtitle = type === 'library' ? '' : '<p class="status-line">' + esc(dateLabel(selected)) + '</p>';
+  byId('editor-body').innerHTML = subtitle + '<div class="fields">' + fields + '</div>';
+  if(type === 'pick'){
+    byId('quantity').addEventListener('input',updatePortion);
+    updatePortion();
+  }
+  if(plan){
+    byId('entry-name').readOnly = true;
+    byId('minutes').addEventListener('input',() => {
+      if(editorContext.manualKcal) return;
+      const minutes = byId('minutes').valueAsNumber;
+      const estimate = Math.round(minutes * activeCaloriesPerMinute(plan.activity,plan.weight));
+      byId('kcal').value = Number.isFinite(estimate) ? estimate : '';
+    });
+    byId('kcal').addEventListener('input',() => {
+      editorContext.manualKcal = byId('kcal').value !== '';
+    });
+  }
+  editor.showModal();
+}
+function portionCalories(){
+  const food = editorContext.item;
+  return rounded(byId('quantity').valueAsNumber / food.base * food.kcal);
+}
+function updatePortion(){
+  const kcal = portionCalories();
+  byId('quantity').setCustomValidity(kcal > 30000 ? 'Enter a portion of 30,000 kcal or less.' : '');
+  byId('portion-result').textContent = Number.isFinite(kcal) ? fmt(kcal) + ' kcal for this portion' : 'Enter a portion to calculate calories.';
+}
+function saveItem(event){
+  event.preventDefault();
+  const {type,item,date} = editorContext;
+  const isPick = type === 'pick';
+  const id = isPick || !item ? idFor() : item.id;
+  const nameField = byId('entry-name');
+  const name = isPick ? item.name : nameField.value.trim();
+  if(!name){
+    nameField.setCustomValidity('Enter a name.');
+    nameField.reportValidity();
+    return;
+  }
+  const kcal = isPick ? portionCalories() : rounded(byId('kcal').valueAsNumber);
+  const ingredients = isPick ? item.ingredients : byId('ingredients')?.value.trim() ?? '';
+  const record = {id,name,kcal};
+  if(type === 'library'){
+    record.ingredients = ingredients;
+  } else if(type === 'exercise'){
+    Object.assign(record,{type,date,minutes:byId('minutes').valueAsNumber || null});
+    if(editorContext.plan && !editorContext.manualKcal || item?.estimated && item.kcal === kcal && item.minutes === record.minutes && item.name === name){
+      record.estimated = true;
+    }
+  } else {
+    const quantity = byId('quantity')?.valueAsNumber;
+    const portion = isPick ? fmt(quantity) + (item.unit === 'g' ? ' g' : quantity === 1 ? ' serving' : ' servings') : byId('portion').value.trim();
+    const tags = item?.name === name ? item.tags ?? [] : [];
+    Object.assign(record,{type:'food',date,meal:byId('meal').value,ingredients,portion,tags});
+  }
+  const collection = type === 'library' ? state.foods : state.entries;
+  const index = collection.findIndex(entry => entry.id === id);
+  if(index < 0) collection.push(record);
+  else collection[index] = record;
+  editor.close();
+  persist();
+  render();
+  toast(type === 'library' ? 'Food saved to your library.' : 'Journal entry saved.');
+}
+function removeItem(){
+  const {type,item} = editorContext;
+  if(!item || !window.confirm('Delete ' + item.name + '?')) return;
+  if(type === 'library') state.foods = state.foods.filter(food => food.id !== item.id);
+  else state.entries = state.entries.filter(entry => entry.id !== item.id);
+  editor.close();
+  persist();
+  render();
+  toast('Deleted.');
+}
+function changeDate(value){
+  selected = value;
+  renderJournal();
+}
+function setPreset(button){
+  const preset = button.dataset.id;
+  const chosen = state.settings.presets;
+  const enabled = !chosen.includes(preset);
+  state.settings.presets = enabled ? [...chosen,preset] : chosen.filter(value => value !== preset);
+  button.setAttribute('aria-pressed',String(enabled));
+  persist();
+}
+function exportBackup(){
+  const url = URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:'application/json'}));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'shovel-of-junts-backup-' + today() + '.json';
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url),1000);
+}
+async function importBackup(event){
+  const file = event.target.files[0];
+  event.target.value = '';
+  if(!file) return;
+  try {
+    if(file.size > 15_000_000) throw new Error('File too large');
+    const data = JSON.parse(await file.text());
+    if(!validBackup(data)) throw new Error('Invalid backup');
+    if(!window.confirm('Replace your current journal, foods and settings with this backup?')) return;
+    state = data;
+    persist();
+    render();
+    toast('Backup restored.');
+  } catch {
+    toast('Could not restore this file. Choose a valid Shovel of Junts backup.');
+  }
+}
+document.addEventListener('click',event => {
+  const button = event.target.closest('button');
+  if(!button) return;
+  if(button.dataset.view){
+    go(button.dataset.view);
+    return;
+  }
+  const id = button.dataset.id;
+  switch(button.dataset.action){
+    case 'browse': go('foods'); byId('food-search').focus(); break;
+    case 'history': go('history'); break;
+    case 'settings': go('settings'); break;
+    case 'open-day': selected = id; go('journal'); break;
+    case 'add-food': openEditor('food'); break;
+    case 'add-exercise': openEditor('exercise'); break;
+    case 'plan': go('exercise'); break;
+    case 'log-plan': {
+      const activity = activities[Number(id)];
+      const plan = state.settings.plan;
+      if(activity && plan) openEditor('exercise',undefined,{activity,weight:plan.weight});
+      break;
+    }
+    case 'add-library': openEditor('library'); break;
+    case 'edit-library': openEditor('library',state.foods.find(food => food.id === id)); break;
+    case 'edit-entry': {
+      const entry = state.entries.find(entry => entry.id === id);
+      if(entry) openEditor(entry.type,entry);
+      break;
+    }
+    case 'pick-food': {
+      const food = allFoods().find(food => food.id === id);
+      if(food) openEditor('pick',food);
+      break;
+    }
+    case 'close-editor': editor.close(); break;
+    case 'toggle-filter': setPreset(button); break;
+    case 'remove-filter': {
+      state.settings.custom.splice(Number(id),1);
+      persist();
+      renderFilters();
+      byId('filter-name').focus();
+      break;
+    }
+  }
+});
+byId('editor-form').addEventListener('submit',saveItem);
+byId('editor-form').addEventListener('input',event => {
+  if(event.target.id === 'entry-name') event.target.setCustomValidity('');
+});
+byId('remove-entry').addEventListener('click',removeItem);
+byId('prev-day').addEventListener('click',() => changeDate(offsetDate(selected,-1)));
+byId('next-day').addEventListener('click',() => changeDate(offsetDate(selected,1)));
+byId('today').addEventListener('click',() => changeDate(today()));
+byId('journal-date').addEventListener('change',event => {
+  if(event.target.value && event.target.validity.valid && event.target.value.length === 10) changeDate(event.target.value);
+  else event.target.value = selected;
+});
+byId('food-search').addEventListener('input',renderFoods);
+byId('show-filtered').addEventListener('change',renderFoods);
+byId('exercise-plan').addEventListener('submit',event => {
+  event.preventDefault();
+  const goal = byId('plan-goal').valueAsNumber || null;
+  const time = byId('plan-time').valueAsNumber || null;
+  if(goal === null && time === null){
+    toast('Enter a calorie goal or time available.');
+    byId('plan-goal').focus();
+    return;
+  }
+  state.settings.plan = {weight:byId('plan-weight').valueAsNumber,goal,time,filter:byId('plan-filter').value};
+  persist();
+  renderPlan();
+  byId('plan-results-panel').scrollIntoView({block:'start',behavior:'instant'});
+});
+byId('targets').addEventListener('submit',event => {
+  event.preventDefault();
+  state.settings.target = byId('food-target').valueAsNumber || null;
+  state.settings.baseline = byId('baseline').valueAsNumber || null;
+  persist();
+  toast('Calorie plan saved.');
+});
+byId('custom-filter').addEventListener('submit',event => {
+  event.preventDefault();
+  const input = byId('filter-name');
+  const value = input.value.trim();
+  const term = normalize(value);
+  if(!term){
+    toast('Enter an ingredient or phrase.');
+    return;
+  }
+  const existing = [...state.settings.custom,...state.settings.presets];
+  if(existing.some(value => normalize(value) === term)){
+    toast('That exclusion is already active.');
+    return;
+  }
+  state.settings.custom.push(value);
+  input.value = '';
+  persist();
+  renderFilters();
+});
+byId('export').addEventListener('click',exportBackup);
+byId('import').addEventListener('click',() => byId('backup-file').click());
+byId('backup-file').addEventListener('change',importBackup);
+window.addEventListener('storage',event => {
+  if(event.key !== storageKey) return;
+  try {
+    const data = event.newValue === null ? blank() : JSON.parse(event.newValue);
+    if(validBackup(data)){
+      if(editor.open){
+        editor.close();
+        toast('Journal changed in another tab. Reopen the entry to edit.');
+      }
+      state = data;
+      render();
+    }
+  } catch {
+    // Retain the current journal if the incoming record cannot be read.
+  }
+});
+render();
+</script>
+</body>
+</html>
