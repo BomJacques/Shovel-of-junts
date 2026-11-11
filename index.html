@@ -71,10 +71,10 @@ dialog{border:1px solid var(--line);border-radius:var(--r);background:var(--card
 <div class="panel chart-card"><div class="panel-head"><h3>Last 7 days</h3><button class="text" type="button" data-action="history">View history →</button></div><div class="legend"><span><i class="dot"></i>Food</span><span><i class="dot out"></i>Exercise</span></div><div class="chart" id="week-chart"></div></div>
 </section>
 <section id="foods" class="subpage" hidden>
-<div class="section-title"><h2>Food library</h2><p class="muted">Search products for calories and ingredients, or use your saved foods.</p></div>
+<div class="section-title"><h2>Food library</h2><p class="muted">Search the Australian food catalogue instantly, or look up packaged products online.</p></div>
 <div class="stack">
-<div class="panel"><div class="panel-head"><h3>Food exclusions</h3><button type="button" data-action="settings">Edit exclusions</button></div><div id="active-filters" class="status-line"></div><p class="section-copy">Matches and saved foods without ingredient notes are hidden by default when exclusions are active. Check labels and ingredient lists for the actual food.</p></div>
-<div class="panel"><div class="panel-head"><h3>Food picker</h3><div class="actions"><button type="button" data-action="manual-food">Manual entry</button><button type="button" class="primary" data-action="add-library">+ Save food</button></div></div><p class="status-line" id="add-date"></p><div class="search-row"><form id="online-search" class="online-search" style="flex:1"><input type="search" id="food-search" maxlength="100" placeholder="e.g. Weet-Bix, yoghurt, banana" aria-label="Search foods"><button type="submit" id="online-search-button" class="primary">Search online</button></form><label class="check"><input type="checkbox" id="show-filtered"> Show matches and unreviewed</label></div><p class="status-line" id="search-count" role="status"></p><div id="catalogue"></div><section class="online-results" aria-labelledby="online-heading"><h3 id="online-heading">Online products</h3><p id="online-status" class="status-line" role="status">Search a food or brand to load calorie values. Search terms are sent to Open Food Facts.</p><div id="online-products"></div><p class="source-line">Product data from <a href="https://world.openfoodfacts.org" target="_blank" rel="noopener noreferrer">Open Food Facts</a> under the <a href="https://opendatacommons.org/licenses/odbl/1-0/" target="_blank" rel="noopener noreferrer">Open Database Licence</a>. Check the product label for portion size, energy and ingredients.</p></section><p class="tagline">Starter portions are 100 g with approximate energy values. Use the packaging for specific products. <a href="https://fdc.nal.usda.gov/download-datasets/" target="_blank" rel="noopener noreferrer">USDA food composition data</a></p></div>
+<div class="panel"><div class="panel-head"><h3>Food exclusions</h3><button type="button" data-action="settings">Edit exclusions</button></div><div id="active-filters" class="status-line"></div><p class="section-copy">Matches and unreviewed foods are hidden when exclusions are active. Use Show matches and unreviewed to inspect generic foods. Check ingredients for the actual food you eat.</p></div>
+<div class="panel"><div class="panel-head"><h3>Food search</h3><div class="actions"><button type="button" data-action="manual-food">Manual entry</button><button type="button" class="primary" data-action="add-library">+ Save food</button></div></div><p class="status-line" id="add-date"></p><div class="search-row"><form id="online-search" class="online-search" style="flex:1"><input type="search" id="food-search" maxlength="100" placeholder="e.g. chicken breast, rice, yoghurt" aria-label="Search foods"><button type="submit" id="online-search-button">Search packaged foods online</button></form><label class="check"><input type="checkbox" id="show-filtered"> Show matches and unreviewed</label></div><div class="search-row"><label class="field">Food source<select id="food-source"><option value="all">All local foods</option><option value="AUSNUT 2023">AUSNUT 2023</option><option value="AFCD Release 3">Australian Food Composition Database</option><option value="Woolworths">Woolworths cached products</option><option value="saved">My saved foods</option></select></label></div><p class="status-line" id="local-resources" role="status"></p><p class="status-line" id="search-count" role="status"></p><div id="catalogue"></div><button type="button" id="more-foods" hidden>Show more matches</button><section class="online-results" aria-labelledby="online-heading"><h3 id="online-heading">Online products</h3><p id="online-status" class="status-line" role="status">Search a food or brand to load calorie values. Search terms are sent to Open Food Facts.</p><div id="online-products"></div><p class="source-line">Product data from <a href="https://world.openfoodfacts.org" target="_blank" rel="noopener noreferrer">Open Food Facts</a> under the <a href="https://opendatacommons.org/licenses/odbl/1-0/" target="_blank" rel="noopener noreferrer">Open Database Licence</a>. Check the product label for portion size, energy and ingredients.</p></section><details class="source-line" style="margin-top:15px"><summary>Food sources and data notes</summary><p class="section-copy">Australian foods are searched in the catalogue loaded with this page. Household measures and recipe descriptions are generic estimates. They do not verify the ingredients of a specific product.</p><p>© Food Standards Australia New Zealand. <a href="https://www.foodstandards.gov.au/science-data/food-nutrient-databases/ausnut/data-files" target="_blank" rel="noopener noreferrer">AUSNUT 2023</a> and <a href="https://www.foodstandards.gov.au/science-data/food-nutrient-databases/afcd/data-files" target="_blank" rel="noopener noreferrer">AFCD Release 3</a>, adapted under the <a href="https://www.foodstandards.gov.au/science-data/monitoringnutrients/afcd/datauserlicenceagreement" target="_blank" rel="noopener noreferrer">FSANZ Data User Licence Agreement</a>. Food names, energy, descriptions, generic recipe ingredients and household measures were extracted from the official Excel files. Energy is converted from kJ to kcal. This data is based on Australian foods and may not be appropriate for use in other countries.</p><p class="section-copy">There are limitations associated with food composition databases. Food composition data used in the database or databases may represent an average of the nutrient content of a particular sample of foods and ingredients, determined at a particular time. The nutrient composition of foods and ingredients can vary substantially between batches and brands because of a number of factors, including changes in season, processing practices and ingredient source, and methods of calculation.</p><p>Woolworths records are a limited product snapshot, retrieved 11 November 2026. Follow the product link to check the current label. Coles live importing is currently unavailable. FatSecret needs an API account with Australian data access before it can be connected.</p></details></div>
 </div>
 </section>
 <section id="exercise" class="subpage" hidden>
@@ -122,6 +122,7 @@ dialog{border:1px solid var(--line);border-radius:var(--r);background:var(--card
 <dialog id="editor" aria-labelledby="editor-title"><form id="editor-form"><div class="dialog-head"><h2 id="editor-title"></h2><button class="icon text" type="button" data-action="close-editor" aria-label="Close">×</button></div><div id="editor-body"></div><div class="dialog-footer"><button type="button" class="danger text" id="remove-entry" hidden>Delete</button><div class="actions" style="margin-left:auto"><button type="button" data-action="close-editor">Cancel</button><button class="primary" id="save-entry">Save</button></div></div></form></dialog>
 <datalist id="exercise-types"><option>Walking</option><option>Running</option><option>Cycling</option><option>Swimming</option><option>Strength training</option><option>Shovelling</option><option>Gardening</option></datalist>
 <div id="toast" class="toast" role="status" hidden></div>
+<script src="australian-foods.js?v=20261111"></script>
 <script>
 'use strict';
 
@@ -190,6 +191,11 @@ const rounded = value => Math.round(value * 10) / 10;
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const normalize = text => String(text).toLowerCase().normalize('NFKD').replace(/\p{M}/gu,'').replace(/[^\p{L}\p{N}]+/gu,' ').trim();
 const contains = (text, term) => (' ' + text + ' ').includes(' ' + term + ' ');
+const bundledData = typeof AUSTRALIAN_FOOD_DATA === 'undefined' ? {foods:[]} : AUSTRALIAN_FOOD_DATA;
+const australianFoods = bundledData.foods.map(food => ({...food,kcal:food.energyKj / 4.184,base:100,unit:food.unit ?? 'g',tags:[],generic:food.generic ?? true,needsReview:food.generic !== false || !food.ingredients}));
+const bundledFoodIndex = new Map(australianFoods.map(food => [food.id,normalize(food.name + ' ' + food.ingredients + ' ' + (food.brand ?? ''))]));
+const searchAliases = text => normalize(text).replace(/\byogurt\b/g,'yoghurt').replace(/\bgarbanzo\b/g,'chickpea');
+let foodDisplayLimit = 40;
 const idFor = () => globalThis.crypto?.randomUUID?.() ?? Date.now().toString(36) + '-' + Math.random().toString(36).slice(2);
 
 function validBackup(data){
@@ -201,14 +207,18 @@ function validBackup(data){
   const idList = items => new Set(items.map(item => item.id)).size === items.length;
   const validDate = value => typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value) && isoDate(parseDate(value)) === value;
   const optionalFoodDetails = item => (item.base === undefined || number(item.base,0.1,10000))
-    && (item.unit === undefined || ['g','g/ml','serving'].includes(item.unit))
+    && (item.unit === undefined || ['g','ml','g/ml','serving'].includes(item.unit))
     && (item.tags === undefined || knownTags(item.tags))
-    && (item.source === undefined || item.source === 'Open Food Facts')
+    && (item.source === undefined || ['Open Food Facts','AUSNUT 2023','AFCD Release 3','Woolworths'].includes(item.source))
     && (item.brand === undefined || text(item.brand,120))
     && (item.servingSize === undefined || text(item.servingSize,100))
     && (item.servingQuantity === undefined || number(item.servingQuantity,0.1,10000))
-    && (item.needsReview === undefined || typeof item.needsReview === 'boolean');
-  const baseItem = item => item && text(item.id,100,true) && text(item.name,120,true) && number(item.kcal,0,30000);
+    && (item.needsReview === undefined || typeof item.needsReview === 'boolean')
+    && (item.generic === undefined || typeof item.generic === 'boolean')
+    && (item.density === undefined || number(item.density,0.001,10))
+    && (item.measures === undefined || list(item.measures, measure => measure && text(measure.name,300,true) && number(measure.grams,0.001,1000000)))
+    && (item.sourceUrl === undefined || text(item.sourceUrl,500) && /^https:\/\/www\.woolworths\.com\.au\/shop\/productdetails\//i.test(item.sourceUrl));
+  const baseItem = item => item && text(item.id,100,true) && text(item.name,300,true) && number(item.kcal,0,30000);
   const settings = data?.settings;
   return data?.version === 1 && settings && optionalTarget(settings.target) && optionalTarget(settings.baseline)
     && knownTags(settings.presets) && list(settings.custom, term => text(term,60,true) && !!normalize(term))
@@ -286,10 +296,11 @@ function filterStatus(food){
     || presets[preset].split(', ').some(term => contains(source,normalize(term))));
   matches.push(...state.settings.custom.filter(term => contains(source,normalize(term))));
   const unknown = (!food.ingredients.trim() || food.needsReview) && !!(state.settings.presets.length || state.settings.custom.length);
-  return {matches, unknown};
+  return {matches, unknown, generic:!!food.generic};
 }
 function warning(status){
   if(status.matches.length) return 'Matches your exclusions · ' + status.matches.join(', ');
+  if(status.generic) return 'Generic food · verify your recipe ingredients';
   if(status.unknown) return 'Needs review · ingredient data incomplete';
   return '';
 }
@@ -380,16 +391,17 @@ function renderMeter(food,exercise){
 function allFoods(){
   const saved = state.foods.map(food => ({base:1,unit:'serving',tags:[],...food}));
   const ids = new Set(saved.map(food => food.id));
-  return [...saved,...starterFoods,...onlineFoods.filter(food => !ids.has(food.id))];
+  return [...saved,...starterFoods,...australianFoods.filter(food => !ids.has(food.id)),...onlineFoods.filter(food => !ids.has(food.id))];
 }
 function foodBasis(food){
-  return food.base === 100 ? '100 ' + (food.unit === 'g/ml' ? 'g or ml (check label)' : 'g') : 'serving';
+  return food.base === 100 ? '100 ' + (food.unit === 'g/ml' ? 'g or ml (check label)' : food.unit === 'ml' ? 'ml' : 'g') : 'serving';
 }
 function foodRow(food){
   const flag = warning(filterStatus(food));
   const edit = !food.source && food.unit === 'serving' ? '<button type="button" class="text" data-action="edit-library" data-id="' + esc(food.id) + '" aria-label="Edit saved food ' + esc(food.name) + '">Edit</button>' : '';
   return '<div class="food-row"><div><div class="entry-name">' + esc(food.name) + '</div>'
     + (food.brand ? '<div class="entry-detail">' + esc(food.brand) + '</div>' : '')
+    + (food.source ? '<div class="source-line">' + esc(food.source) + (food.sourceUrl ? ' · <a href="' + esc(food.sourceUrl) + '" target="_blank" rel="noopener noreferrer">Product label</a>' : '') + '</div>' : '')
     + '<div class="entry-detail">' + fmt(food.kcal) + ' kcal per ' + foodBasis(food) + '</div>'
     + (food.servingSize ? '<div class="entry-detail">Label serving · ' + esc(food.servingSize) + '</div>' : '')
     + (flag ? '<div class="flag">' + esc(flag) + '</div>' : '')
@@ -399,19 +411,35 @@ function renderFoods(){
   const filters = [...state.settings.presets,...state.settings.custom];
   byId('active-filters').textContent = filters.length ? filters.join(' · ') : 'No exclusions selected.';
   byId('add-date').textContent = 'Adding to ' + dateLabel(selected);
-  const query = normalize(byId('food-search').value);
+  const query = searchAliases(byId('food-search').value);
   const show = byId('show-filtered').checked;
+  const sourceChoice = byId('food-source').value;
+  const savedIds = new Set(state.foods.map(food => food.id));
+  const local = allFoods().filter(food => !food.id.startsWith('off-') || savedIds.has(food.id));
+  const activeFilters = filters.length > 0;
+  const terms = query.split(' ').filter(Boolean);
   let hidden = 0;
-  const local = [...state.foods.map(food => ({base:1,unit:'serving',tags:[],...food})),...starterFoods];
-  const visible = local.filter(food => {
-    if(query && !query.split(' ').every(term => normalize(food.name + ' ' + food.ingredients + ' ' + (food.brand ?? '')).includes(term))) return false;
-    if(warning(filterStatus(food)) && !show){ hidden++; return false; }
-    return true;
-  });
-  byId('search-count').textContent = visible.length + ' saved / starter foods' + (hidden ? ' · ' + hidden + ' hidden by exclusions' : '');
-  byId('catalogue').innerHTML = visible.map(foodRow).join('') || '<div class="empty">No saved or starter foods match. Try Search online.</div>';
+  const visible = [];
+  for(const food of local){
+    if(sourceChoice === 'saved' && !savedIds.has(food.id)) continue;
+    if(!['all','saved'].includes(sourceChoice) && food.source !== sourceChoice) continue;
+    if(!query && food.generic) continue;
+    const name = searchAliases(food.name);
+    const indexed = searchAliases(bundledFoodIndex.get(food.id) ?? (food.name + ' ' + food.ingredients + ' ' + (food.brand ?? '')));
+    if(terms.length && !terms.every(term => indexed.includes(term))) continue;
+    const status = filterStatus(food);
+    if(activeFilters && (status.matches.length || status.unknown) && !show){ hidden++; continue; }
+    const rank = name === query ? 0 : name.startsWith(query) ? 1 : terms.every(term => name.includes(term)) ? 2 : 3;
+    visible.push({food,rank});
+  }
+  visible.sort((a,b) => a.rank - b.rank || Number(savedIds.has(b.food.id)) - Number(savedIds.has(a.food.id)) || a.food.name.localeCompare(b.food.name));
+  byId('local-resources').textContent = australianFoods.length ? fmt(australianFoods.filter(food => food.generic).length) + ' Australian food records loaded · local search · ' + australianFoods.filter(food => food.source === 'Woolworths').length + ' Woolworths cached products'
+    : 'Australian catalogue did not load. Reload the page to try again. Saved foods and online search remain available.';
+  byId('search-count').textContent = (query ? visible.length + ' matches' : 'Type a food name to search the Australian catalogue. Showing saved and starter foods.') + (hidden ? ' · ' + hidden + ' hidden by exclusions or awaiting ingredient review' : '');
+  byId('catalogue').innerHTML = visible.slice(0,foodDisplayLimit).map(({food}) => foodRow(food)).join('') || '<div class="empty">' + (hidden ? 'Matches need ingredient review. Use Show matches and unreviewed to inspect them.' : query ? 'No local matches. Try a simpler food name or search packaged foods online.' : 'Start typing to search foods.') + '</div>';
+  byId('more-foods').hidden = visible.length <= foodDisplayLimit;
   let onlineHidden = 0;
-  const matchesQuery = normalize(onlineQuery) === query;
+  const matchesQuery = searchAliases(onlineQuery) === query;
   const products = matchesQuery ? onlineFoods.filter(food => {
     if(warning(filterStatus(food)) && !show){ onlineHidden++; return false; }
     return true;
@@ -559,7 +587,7 @@ const editor = byId('editor');
 const numberField = (id,label,value,min,max,step,required=false,hint='') =>
   '<label class="field">' + label + '<input id="' + id + '" type="number" inputmode="' + (step === '1' ? 'numeric' : 'decimal') + '" min="' + min + '" max="' + max + '" step="' + step + '" value="' + esc(value) + '"' + (required ? ' required' : '') + '>' + (hint ? '<small>' + hint + '</small>' : '') + '</label>';
 const nameField = (label,value,exercise=false) =>
-  '<label class="field">' + label + '<input id="entry-name" maxlength="120" required value="' + esc(value) + '"' + (exercise ? ' list="exercise-types"' : '') + '></label>';
+  '<label class="field">' + label + '<input id="entry-name" maxlength="300" required value="' + esc(value) + '"' + (exercise ? ' list="exercise-types"' : '') + '></label>';
 const ingredientsField = value => '<label class="field">Ingredients (optional)<textarea id="ingredients" rows="2" maxlength="600" placeholder="From the label or your recipe">' + esc(value) + '</textarea></label>';
 const mealField = value => '<label class="field">Meal<select id="meal">' + meals.map(meal => '<option' + (meal === value ? ' selected' : '') + '>' + meal + '</option>').join('') + '</select></label>';
 function openEditor(type,item,plan){
@@ -584,10 +612,14 @@ function openEditor(type,item,plan){
     const flag = warning(filterStatus(value));
     fields = '<p class="status-line">' + esc(detail) + '</p>'
       + (flag ? '<p class="notice">' + esc(flag) + '</p>' : '')
-      + (value.source ? '<p class="source-line">' + esc(value.source) + ' · Check the current label.</p>' : '')
+      + (value.source ? '<p class="source-line">' + esc(value.source) + (value.generic ? ' · Generic nutrition estimate.' : ' · Check the current label.') + '</p>' : '')
+      + (value.generic ? '<p class="source-line">' + esc(value.ingredients ? 'Generic recipe components · ' + value.ingredients : 'A complete ingredient list is unavailable for this generic food.') + '</p>' : '')
       + mealField('Other')
-      + (value.servingQuantity ? '<label class="field">Portion unit<select id="portion-unit"><option value="amount">Grams or ml (match label)</option><option value="servings">Label servings · ' + esc(value.servingSize || value.servingQuantity + ' g / ml') + '</option></select></label>' : '')
-      + numberField('quantity',value.unit === 'g' ? 'Amount (g)' : value.unit === 'g/ml' ? 'Amount (g or ml as on label)' : 'Servings',value.base,0.1,10000,'0.1',true)
+      + '<label class="field">Portion unit<select id="portion-unit"><option value="amount">' + (value.unit === 'g' ? 'Grams' : value.unit === 'ml' ? 'Millilitres' : value.unit === 'serving' ? 'Servings' : 'Grams or ml (match label)') + '</option>'
+      + (value.density ? '<option value="volume">Millilitres</option>' : '')
+      + (value.servingQuantity ? '<option value="servings">Label servings · ' + esc(value.servingSize || value.servingQuantity + ' g / ml') + '</option>' : '')
+      + (value.measures ?? []).map((measure,index) => '<option value="measure-' + index + '">' + esc(measure.name) + ' (' + fmt(measure.grams) + ' g)</option>').join('') + '</select></label>'
+      + numberField('quantity','Amount in selected units',value.base,0.1,10000,'0.1',true)
       + '<p id="portion-result" class="status-line" role="status"></p>';
   } else {
     byId('editor-title').textContent = editing ? 'Edit food' : 'Log food';
@@ -601,7 +633,7 @@ function openEditor(type,item,plan){
   if(type === 'pick'){
     byId('quantity').addEventListener('input',updatePortion);
     byId('portion-unit')?.addEventListener('change',() => {
-      byId('quantity').value = byId('portion-unit').value === 'servings' ? 1 : item.base;
+      byId('quantity').value = ['amount','volume'].includes(byId('portion-unit').value) ? item.base : 1;
       updatePortion();
     });
     updatePortion();
@@ -620,9 +652,17 @@ function openEditor(type,item,plan){
   }
   editor.showModal();
 }
+function portionMultiplier(){
+  const food = editorContext.item;
+  const unit = byId('portion-unit')?.value;
+  if(unit === 'servings') return food.servingQuantity;
+  if(unit === 'volume') return food.density;
+  if(unit?.startsWith('measure-')) return food.measures[Number(unit.slice(8))].grams;
+  return 1;
+}
 function portionCalories(){
   const food = editorContext.item;
-  const multiplier = byId('portion-unit')?.value === 'servings' ? food.servingQuantity : 1;
+  const multiplier = portionMultiplier();
   return rounded(byId('quantity').valueAsNumber * multiplier / food.base * food.kcal);
 }
 function updatePortion(){
@@ -654,11 +694,13 @@ function saveItem(event){
     }
   } else {
     const quantity = byId('quantity')?.valueAsNumber;
-    const labelServings = byId('portion-unit')?.value === 'servings';
-    const portion = isPick ? fmt(quantity) + (labelServings ? ' label servings (' + fmt(rounded(quantity * item.servingQuantity)) + ' g/ml)' : item.unit === 'g' ? ' g' : item.unit === 'g/ml' ? ' g/ml' : quantity === 1 ? ' serving' : ' servings') : byId('portion').value.trim();
+    const unit = byId('portion-unit')?.value;
+    const unitLabel = unit === 'servings' ? 'label servings' : unit === 'volume' ? 'ml' : unit?.startsWith('measure-') ? item.measures[Number(unit.slice(8))].name : item?.unit ?? '';
+    const portion = isPick ? (fmt(quantity) + ' × ' + unitLabel + (unit?.startsWith('measure-') ? ' (' + fmt(rounded(quantity * portionMultiplier())) + ' g)' : '')).slice(0,80) : byId('portion').value.trim();
     const tags = item?.name === name ? item.tags ?? [] : [];
     Object.assign(record,{type:'food',date,meal:byId('meal').value,ingredients,portion,tags});
     if(isPick && item.needsReview) record.needsReview = true;
+    if(isPick && item.generic) record.generic = true;
   }
   if(isPick && item.source && !state.foods.some(food => food.id === item.id)) state.foods.push({...item});
   const collection = type === 'library' ? state.foods : state.entries;
@@ -784,7 +826,9 @@ byId('meter-setup').addEventListener('submit',event => {
   persist();
   renderJournal();
 });
-byId('food-search').addEventListener('input',renderFoods);
+byId('food-search').addEventListener('input',() => { foodDisplayLimit = 40; renderFoods(); });
+byId('food-source').addEventListener('change',() => { foodDisplayLimit = 40; renderFoods(); });
+byId('more-foods').addEventListener('click',() => { foodDisplayLimit += 40; renderFoods(); });
 byId('show-filtered').addEventListener('change',renderFoods);
 byId('exercise-plan').addEventListener('submit',event => {
   event.preventDefault();
@@ -849,4 +893,5 @@ render();
 </script>
 </body>
 </html>
+
 
