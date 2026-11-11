@@ -93,14 +93,14 @@ dialog{border:1px solid var(--line);border-radius:var(--r);background:var(--card
 </div>
 <button class="primary" type="submit">Compare activities</button>
 </form>
-<p class="plan-note">Enter a goal, a time, or both. Your last plan stays in this browser.</p>
+<p class="plan-note">Enter a goal, a time, or both.</p><p id="plan-profile-note" class="plan-note"></p><button type="button" data-action="profile">Edit body measurements</button>
 </div>
 <div class="panel" id="plan-results-panel" hidden>
 <div class="panel-head"><h3>Activity options</h3></div>
 <p class="status-line" id="plan-summary" role="status"></p>
 <div class="plan-list" id="plan-results"></div>
 </div>
-<div class="panel"><h3>How estimates work</h3><p class="plan-note">Active calories are the estimated energy above resting burn. This uses activity averages for adults aged 19–59. Your actual burn can vary with effort, terrain and individual physiology. Choose an activity and pace that suit you. <a href="https://pacompendium.com/adult-compendium/" target="_blank" rel="noopener noreferrer">2024 Adult Compendium</a></p></div>
+<div class="panel"><h3>How estimates work</h3><p class="plan-note">Active calories are the estimated energy above resting burn. Activity rates use averages for adults aged 19–59. A complete profile adjusts the resting burn used in the calculation. Your actual burn can vary with effort, terrain and individual physiology. Choose an activity and pace that suit you. <a href="https://pacompendium.com/adult-compendium/" target="_blank" rel="noopener noreferrer">2024 Adult Compendium</a> · <a href="https://pacompendium.com/corrected-mets/" target="_blank" rel="noopener noreferrer">Resting burn equation</a></p></div>
 </div>
 </section>
 <section id="history" class="subpage" hidden>
@@ -108,8 +108,26 @@ dialog{border:1px solid var(--line);border-radius:var(--r);background:var(--card
 <div class="panel" id="history-list"></div>
 </section>
 <section id="settings" class="subpage" hidden>
-<div class="section-title"><h2>Settings</h2><p class="muted">Set your calorie plan and the foods you want to filter out.</p></div>
+<div class="section-title"><h2>Settings</h2><p class="muted">Manage your body measurements, calorie plan and food exclusions.</p></div>
 <div class="stack">
+<div class="panel" id="body-profile-panel">
+<h3>Body measurements</h3>
+<p class="section-copy">Save your weight for exercise calculations. Add height, age and sex to calculate your estimated resting burn. These details stay in this browser and are included in backups.</p>
+<form id="body-profile">
+<div class="fields">
+<div class="two">
+<label class="field">Weight (kg)<input id="body-weight" type="number" min="25" max="400" step="0.1" inputmode="decimal"></label>
+<label class="field">Height (cm)<input id="body-height" type="number" min="80" max="260" step="0.1" inputmode="decimal"></label>
+</div>
+<div class="two">
+<label class="field">Age (years)<input id="body-age" type="number" min="19" max="120" step="1" inputmode="numeric"></label>
+<label class="field">Sex used in the equation<select id="body-sex"><option value="">Prefer not to enter</option><option value="female">Female</option><option value="male">Male</option></select></label>
+</div>
+</div>
+<div class="actions"><button class="primary" type="submit">Save measurements</button><button type="button" id="clear-body-profile">Clear measurements</button></div>
+<p id="body-resting" class="status-line" role="status"></p>
+</form>
+</div>
 <div class="panel"><h3>Calorie plan</h3><p class="section-copy">Both values are optional and apply across your journal. The calorie meter uses food minus logged exercise against your net target.</p>
 <form id="targets"><div class="fields"><label class="field">Daily net calorie target (kcal)<input id="food-target" type="number" min="1" max="30000" step="1" placeholder="Optional"></label><label class="field">Daily baseline burn, excluding separately logged exercise (kcal)<input id="baseline" type="number" min="1" max="30000" step="1" placeholder="Optional"><small>With a baseline, the journal shows food minus baseline and logged exercise. Leave it blank to see food minus logged exercise only.</small></label></div><button class="primary">Save calorie plan</button></form>
 </div>
@@ -248,6 +266,11 @@ function validBackup(data){
   const settings = data?.settings;
   return data?.version === 1 && settings && optionalTarget(settings.target) && optionalTarget(settings.baseline)
     && knownTags(settings.presets) && list(settings.custom, term => text(term,60,true) && !!normalize(term))
+    && (settings.profile === undefined || settings.profile
+      && (settings.profile.weight === null || number(settings.profile.weight,25,400))
+      && (settings.profile.height === null || number(settings.profile.height,80,260))
+      && (settings.profile.age === null || number(settings.profile.age,19,120) && Number.isInteger(settings.profile.age))
+      && ['', 'female', 'male'].includes(settings.profile.sex))
     && (settings.plan === undefined || settings.plan && number(settings.plan.weight,25,400)
       && (settings.plan.goal === null || number(settings.plan.goal,1,3000) && Number.isInteger(settings.plan.goal))
       && (settings.plan.time === null || number(settings.plan.time,1,300) && Number.isInteger(settings.plan.time))
@@ -551,19 +574,35 @@ async function searchOnline(event){
     }
   }
 }
-function activeCaloriesPerMinute(activity,weight){
-  return (activity.met - 1) * 3.5 * weight / 200;
+function restingCaloriesPerDay(weight,profile){
+  if(!weight || !profile?.height || !profile.age || !profile.sex) return null;
+  const {height,age,sex} = profile;
+  // Harris–Benedict coefficients used by the Adult Compendium.
+  return sex === 'male'
+    ? 66.473 + 13.7516 * weight + 5.0033 * height - 6.755 * age
+    : 655.0955 + 9.5634 * weight + 1.8496 * height - 4.6756 * age;
+}
+function activeCaloriesPerMinute(activity,weight,profile = state.settings.profile){
+  const standardRestingRate = 3.5 * weight / 200;
+  const restingCalories = restingCaloriesPerDay(weight,profile);
+  const restingRate = restingCalories > 0 ? restingCalories / 1440 : standardRestingRate;
+  return Math.max(0,activity.met * standardRestingRate - restingRate);
 }
 function renderPlan(){
   const plan = state.settings.plan;
-  byId('plan-weight').value = plan?.weight ?? '';
+  const profile = state.settings.profile;
+  const weight = plan?.weight ?? profile?.weight;
+  byId('plan-weight').value = weight ?? '';
+  byId('plan-profile-note').textContent = restingCaloriesPerDay(weight,profile) > 0
+    ? 'Estimates use your height, age and sex with the weight entered here.'
+    : 'Estimates use weight and a standard resting rate. Add height, age and sex to personalise them.';
   byId('plan-goal').value = plan?.goal ?? '';
   byId('plan-time').value = plan?.time ?? '';
   byId('plan-filter').value = plan?.filter ?? 'all';
   byId('plan-results-panel').hidden = !plan;
   if(!plan) return;
 
-  const {weight,goal,time,filter} = plan;
+  const {goal,time,filter} = plan;
   const options = activities
     .map((activity,index) => {
       const rate = activeCaloriesPerMinute(activity,weight);
@@ -601,6 +640,16 @@ function renderHistory(){
     : '<p class="empty">Your logged days will appear here.</p>';
 }
 function renderSettings(){
+  const profile = state.settings.profile;
+  byId('body-weight').value = profile?.weight ?? '';
+  byId('body-height').value = profile?.height ?? '';
+  byId('body-age').value = profile?.age ?? '';
+  byId('body-sex').value = profile?.sex ?? '';
+  byId('clear-body-profile').disabled = !profile;
+  const resting = restingCaloriesPerDay(profile?.weight,profile);
+  byId('body-resting').textContent = resting > 0
+    ? 'Estimated resting burn ' + fmt(Math.round(resting)) + ' kcal per day.'
+    : '';
   byId('food-target').value = state.settings.target ?? '';
   byId('baseline').value = state.settings.baseline ?? '';
   renderFilters();
@@ -622,12 +671,17 @@ function openEditor(type,item,plan){
   byId('remove-entry').hidden = !editing;
   const value = item ?? (plan ? {name:plan.activity.name} : {});
   let fields;
+  const canEstimate = type === 'exercise' && !editing && !plan && !!state.settings.profile?.weight;
   if(type === 'exercise'){
     byId('editor-title').textContent = editing ? 'Edit exercise' : 'Log exercise';
-    fields = nameField('Activity',value.name,true) + '<div class="two">'
+    fields = nameField('Activity',value.name,true)
+      + (canEstimate ? '<label class="field">Activity for estimate (optional)<select id="exercise-estimate-activity"><option value="">Choose an activity</option>'
+        + activities.map((activity,index) => '<option value="' + index + '">' + esc(activity.name) + '</option>').join('')
+        + '</select></label><p id="exercise-estimate-details" class="status-line"></p>' : '')
+      + '<div class="two">'
       + numberField('minutes',plan ? 'Actual minutes' : 'Minutes (optional)',value.minutes,1,1440,'1',!!plan)
       + numberField('kcal','Active calories (kcal)',value.kcal,0,30000,'0.1',true) + '</div>'
-      + '<p class="status-line">' + (plan ? 'Enter the time you actually exercised to estimate the burn. You can replace it with your own active calorie reading.' : 'Use active calories from your watch or exercise equipment, or enter your own estimate.') + '</p>';
+      + '<p class="status-line" id="exercise-calorie-source" role="status">' + (plan || canEstimate ? 'Choose an activity and enter minutes for an estimate, or enter the active calories shown on your device.' : 'Enter active calories from your watch or exercise equipment, or enter your own estimate.') + '</p>';
   } else if(type === 'library'){
     byId('editor-title').textContent = editing ? 'Edit saved food' : 'Save a food';
     fields = nameField('Food name',value.name) + numberField('kcal','Calories per serving (kcal)',value.kcal,0,30000,'0.1',true)
@@ -664,17 +718,38 @@ function openEditor(type,item,plan){
     });
     updatePortion();
   }
-  if(plan){
-    byId('entry-name').readOnly = true;
-    byId('minutes').addEventListener('input',() => {
-      if(editorContext.manualKcal) return;
+  if(plan || canEstimate){
+    if(plan) byId('entry-name').readOnly = true;
+    const activitySelect = byId('exercise-estimate-activity');
+    const weight = plan?.weight ?? state.settings.profile.weight;
+    const updateEstimate = () => {
+      const activity = plan?.activity ?? (activitySelect?.value ? activities[Number(activitySelect.value)] : undefined);
       const minutes = byId('minutes').valueAsNumber;
-      const estimate = Math.round(minutes * activeCaloriesPerMinute(plan.activity,plan.weight));
-      byId('kcal').value = Number.isFinite(estimate) ? estimate : '';
+      const estimate = activity && minutes > 0 ? Math.round(minutes * activeCaloriesPerMinute(activity,weight)) : null;
+      editorContext.estimated = !editorContext.manualKcal && estimate !== null;
+      if(!editorContext.manualKcal) byId('kcal').value = estimate ?? '';
+      byId('exercise-calorie-source').textContent = editorContext.manualKcal
+        ? 'Using the active calories you entered.'
+        : estimate !== null ? 'Calculated estimate using ' + (restingCaloriesPerDay(weight,state.settings.profile) > 0 ? 'your body measurements.' : 'your weight.')
+        : plan ? 'Enter minutes for an estimate, or enter the active calories shown on your device.'
+        : 'Choose an activity and enter minutes for an estimate, or enter the active calories shown on your device.';
+    };
+    activitySelect?.addEventListener('change',() => {
+      const activity = activitySelect.value ? activities[Number(activitySelect.value)] : undefined;
+      const name = byId('entry-name');
+      if(activity && (!name.value.trim() || name.value === editorContext.suggestedName)){
+        name.value = activity.name;
+        editorContext.suggestedName = activity.name;
+      }
+      byId('exercise-estimate-details').textContent = activity?.details ?? '';
+      updateEstimate();
     });
+    byId('minutes').addEventListener('input',updateEstimate);
     byId('kcal').addEventListener('input',() => {
       editorContext.manualKcal = byId('kcal').value !== '';
+      updateEstimate();
     });
+    updateEstimate();
   }
   editor.showModal();
 }
@@ -715,7 +790,7 @@ function saveItem(event){
     record.ingredients = ingredients;
   } else if(type === 'exercise'){
     Object.assign(record,{type,date,minutes:byId('minutes').valueAsNumber || null});
-    if(editorContext.plan && !editorContext.manualKcal || item?.estimated && item.kcal === kcal && item.minutes === record.minutes && item.name === name){
+    if(editorContext.estimated || item?.estimated && item.kcal === kcal && item.minutes === record.minutes && item.name === name){
       record.estimated = true;
     }
   } else {
@@ -799,6 +874,7 @@ document.addEventListener('click',event => {
     case 'browse': go('foods'); byId('food-search').focus(); break;
     case 'history': go('history'); break;
     case 'settings': go('settings'); break;
+    case 'profile': go('settings'); byId('body-weight').focus(); break;
     case 'open-day': selected = id; go('journal'); break;
     case 'add-food': go('foods'); byId('food-search').focus(); break;
     case 'add-exercise': openEditor('exercise'); break;
@@ -871,6 +947,30 @@ byId('exercise-plan').addEventListener('submit',event => {
   persist();
   renderPlan();
   byId('plan-results-panel').scrollIntoView({block:'start',behavior:'instant'});
+});
+byId('body-profile').addEventListener('submit',event => {
+  event.preventDefault();
+  const profile = {
+    weight:byId('body-weight').valueAsNumber || null,
+    height:byId('body-height').valueAsNumber || null,
+    age:byId('body-age').valueAsNumber || null,
+    sex:byId('body-sex').value
+  };
+  const oldWeight = state.settings.profile?.weight;
+  const plan = state.settings.plan;
+  if(profile.weight && plan && (!oldWeight || plan.weight === oldWeight)) plan.weight = profile.weight;
+  if(Object.values(profile).some(Boolean)) state.settings.profile = profile;
+  else delete state.settings.profile;
+  persist();
+  renderSettings();
+  toast('Body measurements saved.');
+});
+byId('clear-body-profile').addEventListener('click',() => {
+  delete state.settings.profile;
+  persist();
+  renderSettings();
+  byId('body-weight').focus();
+  toast('Body measurements cleared.');
 });
 byId('targets').addEventListener('submit',event => {
   event.preventDefault();
