@@ -38,6 +38,8 @@ dialog{border:1px solid var(--line);border-radius:var(--r);background:var(--card
 .meter-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.meter-number{font-size:29px;line-height:1.15;font-weight:760;letter-spacing:-.04em;font-variant-numeric:tabular-nums}.meter-number small{font-size:13px;font-weight:500;letter-spacing:0}.meter-track{height:27px;border-radius:7px;overflow:hidden;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(10% - 2px),#fff8 calc(10% - 2px),#fff8 10%),#e6ebd9;margin:12px 0 9px;border:1px solid #c8d3bb}.meter-fill{height:100%;background:repeating-linear-gradient(90deg,transparent 0,transparent 14px,#fff5 14px,#fff5 16px),#69834f;transition:width .4s ease,background-color .4s ease}.calorie-meter.near .meter-fill{background-color:#a78127}.calorie-meter.over .meter-fill{background-color:#a44731}.meter-totals{font-size:13px;display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap}.meter-setup{display:flex;gap:8px;align-items:end;margin-top:10px;flex-wrap:wrap}.meter-setup input{width:160px}.online-search{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.online-search input{flex:1;min-width:145px}.online-search button{min-height:44px}.source-line{font-size:12px;color:var(--muted);margin-top:3px}.online-results{margin-top:17px}.search-error{color:#8a3826}
 @media(prefers-reduced-motion:reduce){.meter-fill{transition:none}}
 @media(max-width:720px){.calorie-meter{padding:13px}.meter-head h3{font-size:15px}.meter-number{font-size:26px}.meter-totals{font-size:12px}.online-search button{padding-inline:10px}}
+
+.scan-actions{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0}.scan-panel{border-top:1px solid var(--line);padding-top:13px;margin-top:13px}.scan-panel p{margin:7px 0}.scan-reader{max-width:100%;overflow:hidden;border-radius:10px}.scan-reader video,.scan-reader img{max-width:100%;object-fit:contain}.label-preview{display:block;max-height:240px;max-width:100%;margin:10px auto;border-radius:7px}.scan-progress{width:100%;accent-color:var(--green)}.review-fields{display:grid;gap:10px;margin-top:12px}.scan-manual{display:flex;gap:8px;align-items:end;margin-top:10px;flex-wrap:wrap}.scan-manual .field{flex:1;min-width:130px}.scan-entry-buttons{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}.scan-help{font-size:12px;color:var(--muted)}#scan-dialog{width:min(520px,calc(100% - 24px))}
 </style>
 </head>
 <body>
@@ -74,7 +76,7 @@ dialog{border:1px solid var(--line);border-radius:var(--r);background:var(--card
 <div class="section-title"><h2>Food library</h2><p class="muted">Search the Australian food catalogue instantly, or look up packaged products online.</p></div>
 <div class="stack">
 <div class="panel"><div class="panel-head"><h3>Food exclusions</h3><button type="button" data-action="settings">Edit exclusions</button></div><div id="active-filters" class="status-line"></div><p class="section-copy">Matches and unreviewed foods are hidden when exclusions are active. Use Show matches and unreviewed to inspect generic foods. Check ingredients for the actual food you eat.</p></div>
-<div class="panel"><div class="panel-head"><h3>Food search</h3><div class="actions"><button type="button" data-action="manual-food">Manual entry</button><button type="button" class="primary" data-action="add-library">+ Save food</button></div></div><p class="status-line" id="add-date"></p><div class="search-row"><form id="online-search" class="online-search" style="flex:1"><input type="search" id="food-search" maxlength="100" placeholder="e.g. chicken breast, rice, yoghurt" aria-label="Search foods"><button type="submit" id="online-search-button">Search packaged foods online</button></form><label class="check"><input type="checkbox" id="show-filtered"> Show matches and unreviewed</label></div><div class="search-row"><label class="field">Food source<select id="food-source"><option value="all">All local foods</option><option value="AUSNUT 2023">AUSNUT 2023</option><option value="AFCD Release 3">Australian Food Composition Database</option><option value="Woolworths">Woolworths cached products</option><option value="saved">My saved foods</option></select></label></div><p class="status-line" id="local-resources" role="status"></p><p class="status-line" id="search-count" role="status"></p><div id="catalogue"></div><button type="button" id="more-foods" hidden>Show more matches</button><section class="online-results" aria-labelledby="online-heading"><h3 id="online-heading">Online products</h3><p id="online-status" class="status-line" role="status">Search a food or brand to load calorie values. Search terms are sent to Open Food Facts.</p><div id="online-products"></div><p class="source-line">Product data from <a href="https://world.openfoodfacts.org" target="_blank" rel="noopener noreferrer">Open Food Facts</a> under the <a href="https://opendatacommons.org/licenses/odbl/1-0/" target="_blank" rel="noopener noreferrer">Open Database Licence</a>. Check the product label for portion size, energy and ingredients.</p></section><details class="source-line" style="margin-top:15px"><summary>Food sources and data notes</summary><p class="section-copy">Australian foods are searched in the catalogue loaded with this page. Household measures and recipe descriptions are generic estimates. They do not verify the ingredients of a specific product.</p><p>© Food Standards Australia New Zealand. <a href="https://www.foodstandards.gov.au/science-data/food-nutrient-databases/ausnut/data-files" target="_blank" rel="noopener noreferrer">AUSNUT 2023</a> and <a href="https://www.foodstandards.gov.au/science-data/food-nutrient-databases/afcd/data-files" target="_blank" rel="noopener noreferrer">AFCD Release 3</a>, adapted under the <a href="https://www.foodstandards.gov.au/science-data/monitoringnutrients/afcd/datauserlicenceagreement" target="_blank" rel="noopener noreferrer">FSANZ Data User Licence Agreement</a>. Food names, energy, descriptions, generic recipe ingredients and household measures were extracted from the official Excel files. Energy is converted from kJ to kcal. This data is based on Australian foods and may not be appropriate for use in other countries.</p><p class="section-copy">There are limitations associated with food composition databases. Food composition data used in the database or databases may represent an average of the nutrient content of a particular sample of foods and ingredients, determined at a particular time. The nutrient composition of foods and ingredients can vary substantially between batches and brands because of a number of factors, including changes in season, processing practices and ingredient source, and methods of calculation.</p><p>Woolworths records are a limited product snapshot, retrieved 11 November 2026. Follow the product link to check the current label. Coles live importing is currently unavailable. FatSecret needs an API account with Australian data access before it can be connected.</p></details></div>
+<div class="panel"><div class="panel-head"><h3>Food search</h3><div class="actions"><button type="button" data-action="manual-food">Manual entry</button><button type="button" class="primary" data-action="add-library">+ Save food</button></div></div><p class="status-line" id="add-date"></p><div class="scan-entry-buttons"><button type="button" data-action="scan-barcode">Scan barcode</button><button type="button" data-action="scan-label">Photograph nutrition label</button></div><div class="search-row"><form id="online-search" class="online-search" style="flex:1"><input type="search" id="food-search" maxlength="100" placeholder="e.g. chicken breast, rice, yoghurt" aria-label="Search foods"><button type="submit" id="online-search-button">Search packaged foods online</button></form><label class="check"><input type="checkbox" id="show-filtered"> Show matches and unreviewed</label></div><div class="search-row"><label class="field">Food source<select id="food-source"><option value="all">All local foods</option><option value="AUSNUT 2023">AUSNUT 2023</option><option value="AFCD Release 3">Australian Food Composition Database</option><option value="Woolworths">Woolworths cached products</option><option value="saved">My saved foods</option></select></label></div><p class="status-line" id="local-resources" role="status"></p><p class="status-line" id="search-count" role="status"></p><div id="catalogue"></div><button type="button" id="more-foods" hidden>Show more matches</button><section class="online-results" aria-labelledby="online-heading"><h3 id="online-heading">Online products</h3><p id="online-status" class="status-line" role="status">Search a food or brand to load calorie values. Search terms are sent to Open Food Facts.</p><div id="online-products"></div><p class="source-line">Product data from <a href="https://world.openfoodfacts.org" target="_blank" rel="noopener noreferrer">Open Food Facts</a> under the <a href="https://opendatacommons.org/licenses/odbl/1-0/" target="_blank" rel="noopener noreferrer">Open Database Licence</a>. Check the product label for portion size, energy and ingredients.</p></section><details class="source-line" style="margin-top:15px"><summary>Food sources and data notes</summary><p class="section-copy">Australian foods are searched in the catalogue loaded with this page. Household measures and recipe descriptions are generic estimates. They do not verify the ingredients of a specific product.</p><p>© Food Standards Australia New Zealand. <a href="https://www.foodstandards.gov.au/science-data/food-nutrient-databases/ausnut/data-files" target="_blank" rel="noopener noreferrer">AUSNUT 2023</a> and <a href="https://www.foodstandards.gov.au/science-data/food-nutrient-databases/afcd/data-files" target="_blank" rel="noopener noreferrer">AFCD Release 3</a>, adapted under the <a href="https://www.foodstandards.gov.au/science-data/monitoringnutrients/afcd/datauserlicenceagreement" target="_blank" rel="noopener noreferrer">FSANZ Data User Licence Agreement</a>. Food names, energy, descriptions, generic recipe ingredients and household measures were extracted from the official Excel files. Energy is converted from kJ to kcal. This data is based on Australian foods and may not be appropriate for use in other countries.</p><p class="section-copy">There are limitations associated with food composition databases. Food composition data used in the database or databases may represent an average of the nutrient content of a particular sample of foods and ingredients, determined at a particular time. The nutrient composition of foods and ingredients can vary substantially between batches and brands because of a number of factors, including changes in season, processing practices and ingredient source, and methods of calculation.</p><p>Woolworths records are a limited product snapshot, retrieved 11 November 2026. Follow the product link to check the current label. Coles live importing is currently unavailable. FatSecret needs an API account with Australian data access before it can be connected.</p></details></div>
 </div>
 </section>
 <section id="exercise" class="subpage" hidden>
@@ -120,6 +122,29 @@ dialog{border:1px solid var(--line);border-radius:var(--r);background:var(--card
 </main>
 <footer class="footer"><div class="wrap">Shovel of Junts · Personal journal · Data stays in this browser</div></footer>
 <dialog id="editor" aria-labelledby="editor-title"><form id="editor-form"><div class="dialog-head"><h2 id="editor-title"></h2><button class="icon text" type="button" data-action="close-editor" aria-label="Close">×</button></div><div id="editor-body"></div><div class="dialog-footer"><button type="button" class="danger text" id="remove-entry" hidden>Delete</button><div class="actions" style="margin-left:auto"><button type="button" data-action="close-editor">Cancel</button><button class="primary" id="save-entry">Save</button></div></div></form></dialog>
+<dialog id="scan-dialog" aria-labelledby="scan-title">
+<div class="dialog-head"><h2 id="scan-title">Scan food</h2><button class="icon text" type="button" id="close-scan" aria-label="Close scanner">×</button></div>
+<p class="scan-help">Barcodes are looked up with Open Food Facts. Nutrition-label photos are read on this device. Reader files download on first use.</p>
+<section class="scan-panel" aria-labelledby="barcode-title"><h3 id="barcode-title">Barcode</h3><p class="scan-help">Use the rear camera, or choose a clear photo of the barcode.</p>
+<div class="scan-actions"><button type="button" id="start-barcode-camera">Start camera</button><button type="button" id="choose-barcode-photo">Barcode photo</button></div>
+<div id="barcode-reader" class="scan-reader"></div><input type="file" id="barcode-photo" accept="image/*" capture="environment" hidden>
+<form id="barcode-form" class="scan-manual"><label class="field">Barcode number<input id="barcode-number" type="text" inputmode="numeric" autocomplete="off" maxlength="24" pattern="[0-9 -]+" placeholder="Digits below the barcode" required></label><button type="submit" id="lookup-barcode">Look up</button></form>
+</section>
+<section class="scan-panel" aria-labelledby="label-title"><h3 id="label-title">Nutrition-label photo</h3><p class="scan-help">Photograph the printed nutrition panel straight on, with the energy row and column headings sharp and readable.</p><button type="button" id="choose-label-photo">Take or choose label photo</button><input type="file" id="label-photo" accept="image/*" capture="environment" hidden><img id="label-preview" class="label-preview" alt="Selected nutrition label for review" hidden></section>
+<p id="scan-status" class="status-line" role="status" aria-live="polite">Choose a scan method.</p><progress id="scan-progress" class="scan-progress" max="1" hidden aria-label="Reading nutrition label"></progress>
+<section id="label-review" class="scan-panel" hidden aria-labelledby="label-review-title"><h3 id="label-review-title">Review nutrition values</h3><p class="notice">Check the photo before saving. Select the energy value from the correct column. Ingredients and allergens require a separate check.</p>
+<label class="field">Detected energy values<select id="energy-candidate"><option value="">Choose a value from the label</option></select></label>
+<form id="label-review-form" class="review-fields">
+<label class="field">Food name<input id="label-food-name" maxlength="300" required placeholder="Product or food name"></label>
+<div class="two"><label class="field">Energy value<input id="label-energy" type="number" inputmode="decimal" min="0" max="125520" step="any" required></label><label class="field">Energy unit<select id="label-energy-unit"><option value="kJ">kJ</option><option value="kcal">kcal / Calories</option></select></label></div>
+<label class="field">Value is for<select id="label-basis" required><option value="">Choose the column used</option><option value="g">100 g</option><option value="ml">100 ml</option><option value="serving">1 serving</option></select></label>
+<label class="field">Ingredients (optional)<textarea id="label-ingredients" rows="2" maxlength="10000" placeholder="Enter ingredients from the package to support exclusions"></textarea></label>
+<label class="check"><input id="label-confirm" type="checkbox" required> I checked the energy value, unit and column against the label.</label>
+<p id="label-energy-preview" class="status-line" role="status"></p><button type="submit" class="primary">Use reviewed food</button>
+</form>
+<details style="margin-top:12px"><summary>Recognised label text</summary><label class="field">Text read from the photo<textarea id="label-raw-text" rows="6" maxlength="15000"></textarea></label><button type="button" id="parse-label-text">Find energy values in text</button></details>
+</section>
+</dialog>
 <datalist id="exercise-types"><option>Walking</option><option>Running</option><option>Cycling</option><option>Swimming</option><option>Strength training</option><option>Shovelling</option><option>Gardening</option></datalist>
 <div id="toast" class="toast" role="status" hidden></div>
 <script src="australian-foods.js?v=20261111"></script>
@@ -209,7 +234,7 @@ function validBackup(data){
   const optionalFoodDetails = item => (item.base === undefined || number(item.base,0.1,10000))
     && (item.unit === undefined || ['g','ml','g/ml','serving'].includes(item.unit))
     && (item.tags === undefined || knownTags(item.tags))
-    && (item.source === undefined || ['Open Food Facts','AUSNUT 2023','AFCD Release 3','Woolworths'].includes(item.source))
+    && (item.source === undefined || ['Open Food Facts','AUSNUT 2023','AFCD Release 3','Woolworths','Nutrition label'].includes(item.source))
     && (item.brand === undefined || text(item.brand,120))
     && (item.servingSize === undefined || text(item.servingSize,100))
     && (item.servingQuantity === undefined || number(item.servingQuantity,0.1,10000))
@@ -783,6 +808,8 @@ document.addEventListener('click',event => {
       if(activity && plan) openEditor('exercise',undefined,{activity,weight:plan.weight});
       break;
     }
+    case 'scan-barcode': openFoodScanner('barcode'); break;
+    case 'scan-label': openFoodScanner('label'); break;
     case 'manual-food': openEditor('food'); break;
     case 'add-library': openEditor('library'); break;
     case 'edit-library': openEditor('library',state.foods.find(food => food.id === id)); break;
@@ -889,9 +916,334 @@ window.addEventListener('storage',event => {
     // Retain the current journal if the incoming record cannot be read.
   }
 });
+const scanDialog = byId('scan-dialog');
+let scanGeneration = 0;
+let barcodeReader;
+let cameraStarting = false;
+let barcodeHandling = false;
+let barcodeRequest;
+let labelWorker;
+let labelPhotoUrl;
+let detectedEnergy = [];
+const scanLibraryLoads = new Map();
+
+function loadScanLibrary(name,url){
+  if(window[name]) return Promise.resolve(window[name]);
+  if(scanLibraryLoads.has(name)) return scanLibraryLoads.get(name);
+  const loading = new Promise((resolve,reject) => {
+    const script = document.createElement('script');
+    const timer = setTimeout(() => { script.remove(); scanLibraryLoads.delete(name); reject(new Error('Reader download timed out')); },20000);
+    script.src = url;
+    script.onload = () => {
+      clearTimeout(timer);
+      if(window[name]) resolve(window[name]);
+      else { scanLibraryLoads.delete(name); reject(new Error('Reader unavailable')); }
+    };
+    script.onerror = () => { clearTimeout(timer); script.remove(); scanLibraryLoads.delete(name); reject(new Error('Reader download failed')); };
+    document.head.append(script);
+  });
+  scanLibraryLoads.set(name,loading);
+  return loading;
+}
+function scanStatus(message){ byId('scan-status').textContent = message; }
+function scanBusy(busy){
+  for(const id of ['start-barcode-camera','choose-barcode-photo','choose-label-photo','lookup-barcode']) byId(id).disabled = busy;
+}
+async function stopBarcodeCamera(){
+  const reader = barcodeReader;
+  if(!reader || cameraStarting) return;
+  barcodeReader = undefined;
+  try { if(reader.isScanning) await reader.stop(); } catch {}
+  try { reader.clear(); } catch {}
+  byId('start-barcode-camera').textContent = 'Start camera';
+}
+function releaseLabelWorker(){
+  const worker = labelWorker;
+  labelWorker = undefined;
+  if(worker) worker.terminate().catch(() => {});
+}
+function clearScanResources(){
+  scanGeneration++;
+  barcodeRequest?.abort();
+  barcodeRequest = undefined;
+  barcodeHandling = false;
+  void stopBarcodeCamera();
+  releaseLabelWorker();
+  if(labelPhotoUrl) URL.revokeObjectURL(labelPhotoUrl);
+  labelPhotoUrl = undefined;
+  byId('label-preview').hidden = true;
+  byId('label-preview').removeAttribute('src');
+  byId('scan-progress').hidden = true;
+}
+function openFoodScanner(method){
+  clearScanResources();
+  scanBusy(cameraStarting);
+  byId('label-review-form').reset();
+  byId('barcode-form').reset();
+  byId('label-review').hidden = true;
+  byId('label-raw-text').value = '';
+  detectedEnergy = [];
+  scanStatus(method === 'label' ? 'Choose a nutrition-label photo to read its energy values.' : 'Start the camera or choose a barcode photo.');
+  scanDialog.showModal();
+  if(method === 'label') byId('choose-label-photo').focus();
+}
+function validFoodBarcode(input){
+  const digits = String(input).replace(/[ -]/g,'');
+  if(!/^(?:\d{8}|\d{12}|\d{13}|\d{14})$/.test(digits)) return null;
+  const numbers = [...digits].map(Number);
+  const check = numbers.pop();
+  const sum = numbers.reverse().reduce((total,digit,index) => total + digit * (index % 2 === 0 ? 3 : 1),0);
+  return (10 - sum % 10) % 10 === check ? digits : null;
+}
+async function newBarcodeReader(){
+  await loadScanLibrary('Html5Qrcode','https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js');
+  return new window.Html5Qrcode('barcode-reader',{formatsToSupport:[window.Html5QrcodeSupportedFormats.EAN_13,window.Html5QrcodeSupportedFormats.EAN_8,window.Html5QrcodeSupportedFormats.UPC_A],verbose:false});
+}
+async function startBarcodeCamera(){
+  if(barcodeReader?.isScanning){ await stopBarcodeCamera(); scanStatus('Camera stopped.'); return; }
+  if(cameraStarting) return;
+  const generation = scanGeneration;
+  cameraStarting = true;
+  scanBusy(true);
+  scanStatus('Opening the rear camera…');
+  let reader;
+  try {
+    reader = await newBarcodeReader();
+    if(generation !== scanGeneration || !scanDialog.open || document.hidden){ reader.clear(); return; }
+    barcodeReader = reader;
+    await reader.start({facingMode:'environment'},{fps:8},decoded => {
+      if(generation === scanGeneration && !barcodeHandling && validFoodBarcode(decoded)) void lookupFoodBarcode(decoded);
+    },() => {});
+    cameraStarting = false;
+    if(generation !== scanGeneration || !scanDialog.open || document.hidden){ await stopBarcodeCamera(); return; }
+    byId('start-barcode-camera').textContent = 'Stop camera';
+    scanStatus('Hold the barcode steady and keep the full row of bars in view.');
+  } catch {
+    cameraStarting = false;
+    if(barcodeReader === reader) await stopBarcodeCamera();
+    if(generation === scanGeneration) scanStatus('Camera unavailable. Allow camera access in your browser, use a barcode photo, or enter the digits.');
+  } finally {
+    cameraStarting = false;
+    if(scanDialog.open && !barcodeHandling) scanBusy(false);
+  }
+}
+async function lookupFoodBarcode(input){
+  const code = validFoodBarcode(input);
+  if(!code){ scanStatus('Enter a valid 8, 12, 13 or 14 digit food barcode, including its check digit.'); return; }
+  if(barcodeHandling) return;
+  barcodeHandling = true;
+  const generation = scanGeneration;
+  scanBusy(true);
+  byId('barcode-number').value = code;
+  scanStatus('Looking up barcode ' + code + '…');
+  await stopBarcodeCamera();
+  barcodeRequest?.abort();
+  const controller = new AbortController();
+  barcodeRequest = controller;
+  const timeout = setTimeout(() => controller.abort(),20000);
+  try {
+    const canonical = code.replace(/^0+/,'');
+    let food = allFoods().find(food => food.id.startsWith('off-') && food.id.slice(4).replace(/^0+/,'') === canonical);
+    if(!food){
+      const url = new URL('https://world.openfoodfacts.org/api/v2/product/' + code + '.json');
+      url.search = new URLSearchParams({fields:'code,product_name,brands,nutriments,ingredients_text,allergens_tags,traces_tags,serving_size,serving_quantity'});
+      const response = await fetch(url,{signal:controller.signal});
+      if(response.status === 404){ scanStatus('This barcode is not in the database. Photograph the nutrition label below.'); return; }
+      if(!response.ok) throw new Error('Lookup failed');
+      const data = await response.json();
+      food = data.status === 1 && data.product ? productToFood(data.product) : null;
+    }
+    if(generation !== scanGeneration || !scanDialog.open) return;
+    if(!food){ scanStatus('No usable nutrition data found for this barcode. Photograph the nutrition label below.'); return; }
+    scanDialog.close();
+    openEditor('pick',food);
+  } catch {
+    if(generation === scanGeneration) scanStatus('Barcode lookup is unavailable or timed out. Try again or photograph the nutrition label.');
+  } finally {
+    clearTimeout(timeout);
+    if(barcodeRequest === controller) barcodeRequest = undefined;
+    if(generation === scanGeneration){ barcodeHandling = false; scanBusy(false); }
+  }
+}
+async function readBarcodePhoto(event){
+  const file = event.target.files[0];
+  event.target.value = '';
+  if(!file) return;
+  if(file.size > 20000000){ scanStatus('Choose a photo smaller than 20 MB.'); return; }
+  const generation = scanGeneration;
+  scanBusy(true);
+  scanStatus('Reading barcode photo…');
+  await stopBarcodeCamera();
+  let reader;
+  try {
+    reader = await newBarcodeReader();
+    if(generation !== scanGeneration || !scanDialog.open) return;
+    const decoded = await reader.scanFile(file,false);
+    reader.clear();
+    reader = undefined;
+    if(generation === scanGeneration && scanDialog.open) await lookupFoodBarcode(decoded);
+  } catch {
+    if(generation === scanGeneration) scanStatus('No readable food barcode found. Try a sharper photo with the full barcode, or enter its digits.');
+  } finally {
+    try { reader?.clear(); } catch {}
+    if(generation === scanGeneration && !barcodeHandling) scanBusy(false);
+  }
+}
+function energyNumber(text){
+  const compact = text.replace(/\s/g,'');
+  const value = /^\d{1,3}(,\d{3})+$/.test(compact) ? Number(compact.replaceAll(',','')) : Number(compact.replace(',','.'));
+  return Number.isFinite(value) && value >= 0 && value <= 125520 ? value : null;
+}
+function energyCandidates(text){
+  const candidates = [];
+  const seen = new Set();
+  for(const line of String(text).split(/\r?\n/)){
+    const pattern = /(\d+(?:[.,]\d+)*(?:[ \u00a0]\d{3})*)\s*(k\s*j\b|k\s*cal\b)/gi;
+    const matches = [...line.matchAll(pattern)].map(match => ({value:energyNumber(match[1]),unit:/cal/i.test(match[2]) ? 'kcal' : 'kJ'}));
+    if(!matches.length){
+      const calories = line.match(/\bcalories\b\s*[:=]?\s*(\d+(?:[.,]\d+)?)/i);
+      if(calories) matches.push({value:energyNumber(calories[1]),unit:'kcal'});
+    }
+    for(const match of matches){
+      if(match.value === null) continue;
+      const key = match.value + '|' + match.unit + '|' + line.trim();
+      if(seen.has(key)) continue;
+      seen.add(key);
+      candidates.push({...match,line:line.trim().slice(0,180)});
+    }
+  }
+  return candidates.slice(0,30);
+}
+function showEnergyCandidates(text){
+  detectedEnergy = energyCandidates(text);
+  byId('energy-candidate').innerHTML = '<option value="">Choose a value from the label</option>' + detectedEnergy.map((candidate,index) => '<option value="' + index + '">' + esc(candidate.value + ' ' + candidate.unit + ' · ' + candidate.line) + '</option>').join('');
+  byId('label-review').hidden = false;
+  byId('label-energy').value = '';
+  byId('label-basis').value = '';
+  byId('label-confirm').checked = false;
+  byId('label-energy-preview').textContent = '';
+  scanStatus(detectedEnergy.length ? 'Energy values found. Choose the value and column you want to use, then check it against the photo.' : 'No energy values could be identified. Check the photo and enter the printed energy value below, or take a clearer photo.');
+}
+async function labelImageCanvas(file){
+  const url = URL.createObjectURL(file);
+  try {
+    const image = new Image();
+    image.src = url;
+    await image.decode();
+    const scale = Math.min(1,2200 / Math.max(image.naturalWidth,image.naturalHeight));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.max(1,Math.round(image.naturalWidth * scale));
+    canvas.height = Math.max(1,Math.round(image.naturalHeight * scale));
+    const context = canvas.getContext('2d');
+    context.fillStyle = 'white'; context.fillRect(0,0,canvas.width,canvas.height);
+    context.drawImage(image,0,0,canvas.width,canvas.height);
+    return canvas;
+  } finally { URL.revokeObjectURL(url); }
+}
+async function readNutritionPhoto(event){
+  const file = event.target.files[0];
+  event.target.value = '';
+  if(!file) return;
+  if(file.size > 20000000){ scanStatus('Choose a photo smaller than 20 MB.'); return; }
+  const generation = scanGeneration;
+  scanBusy(true);
+  await stopBarcodeCamera();
+  releaseLabelWorker();
+  byId('label-review').hidden = true;
+  byId('label-review-form').reset();
+  if(labelPhotoUrl) URL.revokeObjectURL(labelPhotoUrl);
+  labelPhotoUrl = URL.createObjectURL(file);
+  byId('label-preview').src = labelPhotoUrl;
+  byId('label-preview').hidden = false;
+  byId('scan-progress').hidden = false;
+  byId('scan-progress').value = 0;
+  scanStatus('Loading the label reader. First use may take a minute…');
+  let worker;
+  let expired = false;
+  let timer;
+  try {
+    const canvas = await labelImageCanvas(file);
+    await loadScanLibrary('Tesseract','https://cdn.jsdelivr.net/npm/tesseract.js@6.0.1/dist/tesseract.min.js');
+    if(generation !== scanGeneration || !scanDialog.open) return;
+    const work = (async () => {
+      const created = await window.Tesseract.createWorker('eng',1,{logger:message => {
+        if(generation !== scanGeneration || expired) return;
+        if(message.status === 'recognizing text'){
+          byId('scan-progress').value = message.progress;
+          scanStatus('Reading label… ' + Math.round(message.progress * 100) + '%');
+        }
+      }});
+      if(expired || generation !== scanGeneration || !scanDialog.open){ await created.terminate(); return null; }
+      worker = created;
+      labelWorker = created;
+      return created.recognize(canvas);
+    })();
+    const limit = new Promise((resolve,reject) => { timer = setTimeout(() => { expired = true; releaseLabelWorker(); reject(new Error('Label reading timed out')); },90000); });
+    const result = await Promise.race([work,limit]);
+    if(!result || generation !== scanGeneration || !scanDialog.open) return;
+    const text = result.data.text.slice(0,15000);
+    byId('label-raw-text').value = text;
+    showEnergyCandidates(text);
+    byId('label-review').scrollIntoView({block:'start'});
+  } catch {
+    if(generation === scanGeneration){
+      showEnergyCandidates('');
+      scanStatus('The label reader could not finish. Try a sharper JPEG or PNG photo, or enter the printed values in the review form.');
+    }
+  } finally {
+    clearTimeout(timer);
+    expired = true;
+    if(worker && labelWorker === worker) releaseLabelWorker();
+    if(generation === scanGeneration){ byId('scan-progress').hidden = true; scanBusy(false); }
+  }
+}
+function updateLabelEnergy(){
+  byId('label-confirm').checked = false;
+  const energy = byId('label-energy').valueAsNumber;
+  const kcal = byId('label-energy-unit').value === 'kJ' ? energy / 4.184 : energy;
+  const basis = byId('label-basis').value;
+  const maximum = basis === 'serving' ? 30000 : 1000;
+  byId('label-energy').setCustomValidity(Number.isFinite(kcal) && kcal > maximum ? 'Check this energy value and column. It exceeds the supported range.' : '');
+  byId('label-energy-preview').textContent = Number.isFinite(kcal) && basis ? fmt(kcal) + ' kcal per ' + (basis === 'serving' ? 'serving' : '100 ' + basis) : '';
+}
+function useReviewedLabel(event){
+  event.preventDefault();
+  const name = byId('label-food-name').value.trim();
+  if(!name){ byId('label-food-name').setCustomValidity('Enter a food name.'); byId('label-food-name').reportValidity(); return; }
+  const unit = byId('label-basis').value;
+  const energy = byId('label-energy').valueAsNumber;
+  const kcal = byId('label-energy-unit').value === 'kJ' ? energy / 4.184 : energy;
+  const ingredients = byId('label-ingredients').value.trim();
+  const food = {id:'label-' + idFor(),name,kcal,base:unit === 'serving' ? 1 : 100,unit,ingredients,tags:[],source:'Nutrition label',needsReview:!ingredients};
+  scanDialog.close();
+  openEditor('pick',food);
+}
+byId('close-scan').addEventListener('click',() => scanDialog.close());
+scanDialog.addEventListener('close',clearScanResources);
+byId('start-barcode-camera').addEventListener('click',startBarcodeCamera);
+byId('choose-barcode-photo').addEventListener('click',() => byId('barcode-photo').click());
+byId('choose-label-photo').addEventListener('click',() => byId('label-photo').click());
+byId('barcode-photo').addEventListener('change',readBarcodePhoto);
+byId('label-photo').addEventListener('change',readNutritionPhoto);
+byId('barcode-form').addEventListener('submit',event => { event.preventDefault(); void lookupFoodBarcode(byId('barcode-number').value); });
+byId('energy-candidate').addEventListener('change',() => {
+  const candidate = detectedEnergy[Number(byId('energy-candidate').value)];
+  if(byId('energy-candidate').value === '' || !candidate) return;
+  byId('label-energy').value = candidate.value;
+  byId('label-energy-unit').value = candidate.unit;
+  updateLabelEnergy();
+});
+byId('parse-label-text').addEventListener('click',() => showEnergyCandidates(byId('label-raw-text').value));
+for(const id of ['label-energy','label-energy-unit','label-basis']) byId(id).addEventListener('input',updateLabelEnergy);
+byId('label-food-name').addEventListener('input',() => byId('label-food-name').setCustomValidity(''));
+byId('label-review-form').addEventListener('submit',useReviewedLabel);
+window.addEventListener('pagehide',clearScanResources);
+document.addEventListener('visibilitychange',() => { if(document.hidden) void stopBarcodeCamera(); });
+
 render();
 </script>
 </body>
 </html>
+
 
 
