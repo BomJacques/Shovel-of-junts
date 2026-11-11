@@ -39,7 +39,7 @@ dialog{border:1px solid var(--line);border-radius:var(--r);background:var(--card
 @media(prefers-reduced-motion:reduce){.meter-fill{transition:none}}
 @media(max-width:720px){.calorie-meter{padding:13px}.meter-head h3{font-size:15px}.meter-number{font-size:26px}.meter-totals{font-size:12px}.online-search button{padding-inline:10px}}
 
-.scan-actions{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0}.scan-panel{border-top:1px solid var(--line);padding-top:13px;margin-top:13px}.scan-panel p{margin:7px 0}.scan-reader{max-width:100%;overflow:hidden;border-radius:10px}.scan-reader video,.scan-reader img{max-width:100%;object-fit:contain}.label-preview{display:block;max-height:240px;max-width:100%;margin:10px auto;border-radius:7px}.scan-progress{width:100%;accent-color:var(--green)}.review-fields{display:grid;gap:10px;margin-top:12px}.scan-manual{display:flex;gap:8px;align-items:end;margin-top:10px;flex-wrap:wrap}.scan-manual .field{flex:1;min-width:130px}.scan-entry-buttons{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}.scan-help{font-size:12px;color:var(--muted)}#scan-dialog{width:min(520px,calc(100% - 24px))}
+.scan-actions{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0}.scan-panel{border-top:1px solid var(--line);padding-top:13px;margin-top:13px}.scan-panel p{margin:7px 0}.scan-reader{max-width:100%;overflow:hidden;border-radius:10px}.scan-reader video,.scan-reader img{max-width:100%;object-fit:contain}.label-preview{display:block;max-height:320px;max-width:100%;margin:10px auto;border-radius:7px;touch-action:none;cursor:crosshair}.label-crop-actions button{min-height:44px}.scan-progress{width:100%;accent-color:var(--green)}.review-fields{display:grid;gap:10px;margin-top:12px}.scan-manual{display:flex;gap:8px;align-items:end;margin-top:10px;flex-wrap:wrap}.scan-manual .field{flex:1;min-width:130px}.scan-entry-buttons{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}.scan-help{font-size:12px;color:var(--muted)}#scan-dialog{width:min(520px,calc(100% - 24px))}
 </style>
 </head>
 <body>
@@ -130,9 +130,10 @@ dialog{border:1px solid var(--line);border-radius:var(--r);background:var(--card
 <div id="barcode-reader" class="scan-reader"></div><input type="file" id="barcode-photo" accept="image/*" capture="environment" hidden>
 <form id="barcode-form" class="scan-manual"><label class="field">Barcode number<input id="barcode-number" type="text" inputmode="numeric" autocomplete="off" maxlength="24" pattern="[0-9 -]+" placeholder="Digits below the barcode" required></label><button type="submit" id="lookup-barcode">Look up</button></form>
 </section>
-<section class="scan-panel" aria-labelledby="label-title"><h3 id="label-title">Nutrition-label photo</h3><p class="scan-help">Photograph the printed nutrition panel straight on, with the energy row and column headings sharp and readable.</p><button type="button" id="choose-label-photo">Take or choose label photo</button><input type="file" id="label-photo" accept="image/*" capture="environment" hidden><img id="label-preview" class="label-preview" alt="Selected nutrition label for review" hidden></section>
+<section class="scan-panel" aria-labelledby="label-title"><h3 id="label-title">Nutrition-label photo</h3><p class="scan-help">Photograph the printed nutrition panel straight on, with the energy row and column headings sharp and readable.</p><div class="scan-actions"><button type="button" id="choose-label-photo">Take or choose label photo</button><button type="button" id="paste-label">Paste Live Text</button></div><input type="file" id="label-photo" accept="image/*" capture="environment" hidden>
+<div id="label-crop" hidden><p class="scan-help">Drag across the energy row to focus the scan, or read the full photo.</p><canvas id="label-preview" class="label-preview" role="img" aria-label="Nutrition label and selected scan area"></canvas><div class="scan-actions label-crop-actions"><button type="button" id="rotate-label">Rotate</button><button type="button" id="reset-label-crop" disabled>Full photo</button><button type="button" id="read-label" class="primary">Read label</button></div></div></section>
 <p id="scan-status" class="status-line" role="status" aria-live="polite">Choose a scan method.</p><progress id="scan-progress" class="scan-progress" max="1" hidden aria-label="Reading nutrition label"></progress>
-<section id="label-review" class="scan-panel" hidden aria-labelledby="label-review-title"><h3 id="label-review-title">Review nutrition values</h3><p class="notice">Check the photo before saving. Select the energy value from the correct column. Ingredients and allergens require a separate check.</p>
+<section id="label-review" class="scan-panel" hidden aria-labelledby="label-review-title"><h3 id="label-review-title">Review nutrition values</h3><p class="notice">Check the package label before saving. Select the energy value from the correct column. Ingredients and allergens require a separate check.</p>
 <label class="field">Detected energy values<select id="energy-candidate"><option value="">Choose a value from the label</option></select></label>
 <form id="label-review-form" class="review-fields">
 <label class="field">Food name<input id="label-food-name" maxlength="300" required placeholder="Product or food name"></label>
@@ -142,8 +143,8 @@ dialog{border:1px solid var(--line);border-radius:var(--r);background:var(--card
 <label class="check"><input id="label-confirm" type="checkbox" required> I checked the energy value, unit and column against the label.</label>
 <p id="label-energy-preview" class="status-line" role="status"></p><button type="submit" class="primary">Use reviewed food</button>
 </form>
-<details style="margin-top:12px"><summary>Recognised label text</summary><label class="field">Text read from the photo<textarea id="label-raw-text" rows="6" maxlength="15000"></textarea></label><button type="button" id="parse-label-text">Find energy values in text</button></details>
 </section>
+<details id="label-text-panel" style="margin-top:12px" hidden><summary>Label text</summary><p class="scan-help">On iPhone, use Live Text in Camera or Photos to copy the nutrition panel, then paste it here.</p><label class="field">Text from the label<textarea id="label-raw-text" rows="5" maxlength="15000"></textarea></label><button type="button" id="parse-label-text">Find energy values in text</button></details>
 </dialog>
 <datalist id="exercise-types"><option>Walking</option><option>Running</option><option>Cycling</option><option>Swimming</option><option>Strength training</option><option>Shovelling</option><option>Gardening</option></datalist>
 <div id="toast" class="toast" role="status" hidden></div>
@@ -923,7 +924,11 @@ let cameraStarting = false;
 let barcodeHandling = false;
 let barcodeRequest;
 let labelWorker;
-let labelPhotoUrl;
+let labelPhoto;
+let labelAngle = 0;
+let labelCrop;
+let cropStart;
+const labelPreview = byId('label-preview');
 let detectedEnergy = [];
 const scanLibraryLoads = new Map();
 
@@ -947,7 +952,8 @@ function loadScanLibrary(name,url){
 }
 function scanStatus(message){ byId('scan-status').textContent = message; }
 function scanBusy(busy){
-  for(const id of ['start-barcode-camera','choose-barcode-photo','choose-label-photo','lookup-barcode']) byId(id).disabled = busy;
+  for(const id of ['start-barcode-camera','choose-barcode-photo','choose-label-photo','lookup-barcode','paste-label','rotate-label','read-label','parse-label-text']) byId(id).disabled = busy;
+  byId('reset-label-crop').disabled = busy || !labelCrop;
 }
 async function stopBarcodeCamera(){
   const reader = barcodeReader;
@@ -969,10 +975,15 @@ function clearScanResources(){
   barcodeHandling = false;
   void stopBarcodeCamera();
   releaseLabelWorker();
-  if(labelPhotoUrl) URL.revokeObjectURL(labelPhotoUrl);
-  labelPhotoUrl = undefined;
-  byId('label-preview').hidden = true;
-  byId('label-preview').removeAttribute('src');
+  labelPhoto = undefined;
+  labelAngle = 0;
+  labelCrop = undefined;
+  cropStart = undefined;
+  labelPreview.width = 1;
+  labelPreview.height = 1;
+  byId('label-crop').hidden = true;
+  byId('label-text-panel').hidden = true;
+  byId('label-text-panel').open = false;
   byId('scan-progress').hidden = true;
 }
 function openFoodScanner(method){
@@ -1097,7 +1108,8 @@ function energyNumber(text){
 function energyCandidates(text){
   const candidates = [];
   const seen = new Set();
-  for(const line of String(text).split(/\r?\n/)){
+  const lines = String(text).replace(/(\d)[ \t]*\r?\n[ \t]*(k[ \t]*(?:j|cal)\b)/gi,'$1 $2');
+  for(const line of lines.split(/\r?\n/)){
     const pattern = /(\d+(?:[.,]\d+)*(?:[ \u00a0]\d{3})*)\s*(k\s*j\b|k\s*cal\b)/gi;
     const matches = [...line.matchAll(pattern)].map(match => ({value:energyNumber(match[1]),unit:/cal/i.test(match[2]) ? 'kcal' : 'kJ'}));
     if(!matches.length){
@@ -1115,32 +1127,72 @@ function energyCandidates(text){
   return candidates.slice(0,30);
 }
 function showEnergyCandidates(text){
+  byId('label-text-panel').hidden = false;
   detectedEnergy = energyCandidates(text);
   byId('energy-candidate').innerHTML = '<option value="">Choose a value from the label</option>' + detectedEnergy.map((candidate,index) => '<option value="' + index + '">' + esc(candidate.value + ' ' + candidate.unit + ' · ' + candidate.line) + '</option>').join('');
   byId('label-review').hidden = false;
   byId('label-energy').value = '';
   byId('label-basis').value = '';
-  byId('label-confirm').checked = false;
-  byId('label-energy-preview').textContent = '';
-  scanStatus(detectedEnergy.length ? 'Energy values found. Choose the value and column you want to use, then check it against the photo.' : 'No energy values could be identified. Check the photo and enter the printed energy value below, or take a clearer photo.');
+  updateLabelEnergy();
+  scanStatus(detectedEnergy.length ? 'Energy values found. Choose the value and column you want to use, then check it against the label.' : 'No energy values were found. Crop to the energy row, paste Live Text, or enter the value from the label.');
 }
-async function labelImageCanvas(file){
-  const url = URL.createObjectURL(file);
-  try {
-    const image = new Image();
-    image.src = url;
-    await image.decode();
-    const scale = Math.min(1,2200 / Math.max(image.naturalWidth,image.naturalHeight));
-    const canvas = document.createElement('canvas');
-    canvas.width = Math.max(1,Math.round(image.naturalWidth * scale));
-    canvas.height = Math.max(1,Math.round(image.naturalHeight * scale));
-    const context = canvas.getContext('2d');
-    context.fillStyle = 'white'; context.fillRect(0,0,canvas.width,canvas.height);
-    context.drawImage(image,0,0,canvas.width,canvas.height);
-    return canvas;
-  } finally { URL.revokeObjectURL(url); }
+function orientedLabelSize(){
+  const {naturalWidth:width,naturalHeight:height} = labelPhoto;
+  return labelAngle % 2 ? {width:height,height:width} : {width,height};
 }
-async function readNutritionPhoto(event){
+function drawLabel(target,crop,limit,upscale=1,padding=0){
+  const {width,height} = orientedLabelSize();
+  const {left,top,right,bottom} = crop ?? {left:0,top:0,right:1,bottom:1};
+  const cropWidth = (right-left)*width;
+  const cropHeight = (bottom-top)*height;
+  const scale = Math.min(upscale,limit/Math.max(cropWidth,cropHeight));
+  target.width = Math.max(1,Math.round(cropWidth*scale))+2*padding;
+  target.height = Math.max(1,Math.round(cropHeight*scale))+2*padding;
+  const context = target.getContext('2d');
+  context.fillStyle = '#fff';
+  context.fillRect(0,0,target.width,target.height);
+  context.beginPath();
+  context.rect(padding,padding,target.width-2*padding,target.height-2*padding);
+  context.clip();
+  context.translate(padding,padding);
+  context.scale(scale,scale);
+  context.translate(-left*width+width/2,-top*height+height/2);
+  context.rotate(labelAngle*Math.PI/2);
+  context.drawImage(labelPhoto,-labelPhoto.naturalWidth/2,-labelPhoto.naturalHeight/2);
+  context.resetTransform();
+  return context;
+}
+function renderLabelPreview(){
+  const context = drawLabel(labelPreview,undefined,500);
+  if(labelCrop){
+    const {width,height} = labelPreview;
+    const {left,top,right,bottom} = labelCrop;
+    const x = left*width, y = top*height, w = (right-left)*width, h = (bottom-top)*height;
+    context.fillStyle = 'rgba(0,0,0,.42)';
+    context.beginPath();
+    context.rect(0,0,width,height);
+    context.rect(x,y,w,h);
+    context.fill('evenodd');
+    context.strokeStyle = '#dce99f';
+    context.lineWidth = 3;
+    context.strokeRect(x,y,w,h);
+  }
+  byId('reset-label-crop').disabled = !labelCrop;
+}
+function cropPoint(event){
+  const rect = labelPreview.getBoundingClientRect();
+  const clamp = value => Math.min(1,Math.max(0,value));
+  return {x:clamp((event.clientX-rect.left)/rect.width),y:clamp((event.clientY-rect.top)/rect.height)};
+}
+function moveLabelCrop(event){
+  if(!cropStart) return;
+  const end = cropPoint(event);
+  const width = Math.abs(end.x-cropStart.x), height = Math.abs(end.y-cropStart.y);
+  if(width < .025 || height < .025) return;
+  labelCrop = {left:Math.min(cropStart.x,end.x),top:Math.min(cropStart.y,end.y),right:Math.max(cropStart.x,end.x),bottom:Math.max(cropStart.y,end.y)};
+  renderLabelPreview();
+}
+async function chooseNutritionPhoto(event){
   const file = event.target.files[0];
   event.target.value = '';
   if(!file) return;
@@ -1148,21 +1200,72 @@ async function readNutritionPhoto(event){
   const generation = scanGeneration;
   scanBusy(true);
   await stopBarcodeCamera();
+  if(generation !== scanGeneration) return;
+  const url = URL.createObjectURL(file);
+  try {
+    const photo = new Image();
+    photo.src = url;
+    await photo.decode();
+    if(generation !== scanGeneration || !scanDialog.open) return;
+    labelPhoto = photo;
+    labelAngle = 0;
+    labelCrop = undefined;
+    byId('label-review').hidden = true;
+    byId('label-review-form').reset();
+    byId('label-text-panel').hidden = true;
+    byId('label-raw-text').value = '';
+    byId('label-crop').hidden = false;
+    renderLabelPreview();
+    scanStatus('Select the energy row if the label is small in the photo, then tap Read label.');
+  } catch {
+    if(generation === scanGeneration) scanStatus('This photo could not be opened. Choose a JPEG or PNG, or paste Live Text.');
+  } finally {
+    URL.revokeObjectURL(url);
+    if(generation === scanGeneration) scanBusy(false);
+  }
+}
+function improveLabelContrast(canvas){
+  const context = canvas.getContext('2d');
+  const pixels = context.getImageData(0,0,canvas.width,canvas.height);
+  const data = pixels.data;
+  const levels = new Uint32Array(256);
+  for(let i=0;i<data.length;i+=4){
+    const grey = Math.round(data[i]*.299+data[i+1]*.587+data[i+2]*.114);
+    data[i] = grey;
+    levels[grey]++;
+  }
+  const trim = data.length/4*.015;
+  let dark=0, light=255, lowCount=levels[0], highCount=levels[255];
+  while(dark<255 && lowCount<trim) lowCount+=levels[++dark];
+  while(light>dark && highCount<trim) highCount+=levels[--light];
+  const range = Math.max(32,light-dark);
+  for(let i=0;i<data.length;i+=4){
+    const grey = (data[i]-dark)*255/range;
+    data[i] = grey;
+    data[i+1] = grey;
+    data[i+2] = grey;
+  }
+  context.putImageData(pixels,0,0);
+}
+async function readNutritionPhoto(){
+  if(!labelPhoto) return;
+  const generation = scanGeneration;
+  scanBusy(true);
+  await stopBarcodeCamera();
+  if(generation !== scanGeneration) return;
   releaseLabelWorker();
   byId('label-review').hidden = true;
-  byId('label-review-form').reset();
-  if(labelPhotoUrl) URL.revokeObjectURL(labelPhotoUrl);
-  labelPhotoUrl = URL.createObjectURL(file);
-  byId('label-preview').src = labelPhotoUrl;
-  byId('label-preview').hidden = false;
+  byId('label-text-panel').hidden = true;
   byId('scan-progress').hidden = false;
   byId('scan-progress').value = 0;
-  scanStatus('Loading the label reader. First use may take a minute…');
+  scanStatus('Loading the label reader…');
   let worker;
   let expired = false;
   let timer;
   try {
-    const canvas = await labelImageCanvas(file);
+    const canvas = document.createElement('canvas');
+    drawLabel(canvas,labelCrop,2800,labelCrop ? 2 : 1,labelCrop ? 48 : 0);
+    improveLabelContrast(canvas);
     await loadScanLibrary('Tesseract','https://cdn.jsdelivr.net/npm/tesseract.js@6.0.1/dist/tesseract.min.js');
     if(generation !== scanGeneration || !scanDialog.open) return;
     const work = (async () => {
@@ -1176,7 +1279,19 @@ async function readNutritionPhoto(event){
       if(expired || generation !== scanGeneration || !scanDialog.open){ await created.terminate(); return null; }
       worker = created;
       labelWorker = created;
-      return created.recognize(canvas);
+      const singleRow = labelCrop && (canvas.width-96)/(canvas.height-96) >= 6;
+      await created.setParameters({tessedit_pageseg_mode:singleRow ? '7' : '6',preserve_interword_spaces:'1'});
+      const first = await created.recognize(canvas);
+      if(energyCandidates(first.data.text).length || expired || generation !== scanGeneration) return first;
+      drawLabel(canvas,labelCrop,2800,1,labelCrop ? 48 : 0);
+      await created.setParameters({tessedit_pageseg_mode:singleRow ? '6' : '11'});
+      const second = await created.recognize(canvas);
+      if(energyCandidates(second.data.text).length) return second;
+      if(!labelCrop || expired || generation !== scanGeneration) return first;
+      drawLabel(canvas,undefined,2800);
+      await created.setParameters({tessedit_pageseg_mode:'6'});
+      const full = await created.recognize(canvas);
+      return energyCandidates(full.data.text).length ? full : first;
     })();
     const limit = new Promise((resolve,reject) => { timer = setTimeout(() => { expired = true; releaseLabelWorker(); reject(new Error('Label reading timed out')); },90000); });
     const result = await Promise.race([work,limit]);
@@ -1188,7 +1303,7 @@ async function readNutritionPhoto(event){
   } catch {
     if(generation === scanGeneration){
       showEnergyCandidates('');
-      scanStatus('The label reader could not finish. Try a sharper JPEG or PNG photo, or enter the printed values in the review form.');
+      scanStatus('The reader could not finish. Try selecting just the energy row or paste Live Text.');
     }
   } finally {
     clearTimeout(timer);
@@ -1224,7 +1339,30 @@ byId('start-barcode-camera').addEventListener('click',startBarcodeCamera);
 byId('choose-barcode-photo').addEventListener('click',() => byId('barcode-photo').click());
 byId('choose-label-photo').addEventListener('click',() => byId('label-photo').click());
 byId('barcode-photo').addEventListener('change',readBarcodePhoto);
-byId('label-photo').addEventListener('change',readNutritionPhoto);
+byId('label-photo').addEventListener('change',chooseNutritionPhoto);
+byId('read-label').addEventListener('click',readNutritionPhoto);
+byId('rotate-label').addEventListener('click',() => {
+  labelAngle = (labelAngle+1)%4;
+  labelCrop = undefined;
+  renderLabelPreview();
+});
+byId('reset-label-crop').addEventListener('click',() => { labelCrop = undefined; renderLabelPreview(); });
+byId('paste-label').addEventListener('click',async () => {
+  const generation = scanGeneration;
+  await stopBarcodeCamera();
+  if(generation !== scanGeneration || !scanDialog.open) return;
+  byId('label-text-panel').hidden = false;
+  byId('label-text-panel').open = true;
+  byId('label-raw-text').focus();
+});
+labelPreview.addEventListener('pointerdown',event => {
+  if(byId('read-label').disabled || !event.isPrimary) return;
+  cropStart = cropPoint(event);
+  labelPreview.setPointerCapture(event.pointerId);
+});
+labelPreview.addEventListener('pointermove',moveLabelCrop);
+labelPreview.addEventListener('pointerup',event => { moveLabelCrop(event); cropStart = undefined; });
+labelPreview.addEventListener('pointercancel',() => { cropStart = undefined; });
 byId('barcode-form').addEventListener('submit',event => { event.preventDefault(); void lookupFoodBarcode(byId('barcode-number').value); });
 byId('energy-candidate').addEventListener('change',() => {
   const candidate = detectedEnergy[Number(byId('energy-candidate').value)];
@@ -1233,7 +1371,12 @@ byId('energy-candidate').addEventListener('change',() => {
   byId('label-energy-unit').value = candidate.unit;
   updateLabelEnergy();
 });
-byId('parse-label-text').addEventListener('click',() => showEnergyCandidates(byId('label-raw-text').value));
+byId('parse-label-text').addEventListener('click',() => {
+  const text = byId('label-raw-text').value.trim();
+  if(!text){ scanStatus('Paste the nutrition text before looking for energy values.'); return; }
+  showEnergyCandidates(text);
+  byId('label-review').scrollIntoView({block:'start'});
+});
 for(const id of ['label-energy','label-energy-unit','label-basis']) byId(id).addEventListener('input',updateLabelEnergy);
 byId('label-food-name').addEventListener('input',() => byId('label-food-name').setCustomValidity(''));
 byId('label-review-form').addEventListener('submit',useReviewedLabel);
